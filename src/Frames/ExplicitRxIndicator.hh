@@ -1,6 +1,18 @@
 #ifndef BEECOLL_FRAMES_EXPLICITRXINDICATOR_HH
 #define BEECOLL_FRAMES_EXPLICITRXINDICATOR_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // BEECOLL headers
 #include "Frame.hh"
 
@@ -20,7 +32,7 @@ namespace Frames
         PACKAGE_EXTENDED_TIMEOUT = 0x40
     };
 
-    class ExplicitRxIndicator : public Frame
+    class BEECOLL_API ExplicitRxIndicator : public Frame
     {
     public:
         explicit ExplicitRxIndicator(const std::vector<uint8_t>& frame_data = {});

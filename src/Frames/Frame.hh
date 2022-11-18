@@ -1,6 +1,19 @@
 #ifndef BEECOLL_API_FRAME_HH
 #define BEECOLL_API_FRAME_HH
 
+
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // STD headers
 #include <vector>
 #include <cstdint>
@@ -37,7 +50,7 @@ namespace BeeCoLL
         JOIN_NOTIFICATION_STATUS = 0xA5
     };
 
-    class Frame
+    class BEECOLL_API Frame
     {
     public:
         Frame(FrameType type, const std::vector<uint8_t>& data);

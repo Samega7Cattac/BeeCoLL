@@ -2,14 +2,14 @@
 #define BEECOLL_NODE_HH
 
 #ifdef _WIN32
-    #ifdef DBRIDGEEXT_XBEE_BUILD
-        #define DBRIDGEEXT_XBEE_API __declspec(dllexport)
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
     #else
-        #define DBRIDGEEXT_XBEE_API __declspec(dllimport)
+        #define BEECOLL_API __declspec(dllimport)
     #endif
 #elif __unix__
-    #ifndef DBRIDGEEXT_XBEE_API
-        #define DBRIDGEEXT_XBEE_API
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
     #endif
 #endif
 
@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <string>
 
-namespace DBRIDGEEXT_XBEE_API BeeCoLL
+namespace BEECOLL_API BeeCoLL
 {
     //! @brief Channel Selector
     //!

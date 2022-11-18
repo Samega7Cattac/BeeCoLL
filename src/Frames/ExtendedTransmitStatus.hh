@@ -1,6 +1,18 @@
 #ifndef BEECOLL_FRAMES_EXTENDEDTRANSMITSTATUS_HH
 #define BEECOLL_FRAMES_EXTENDEDTRANSMITSTATUS_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 #include "Frame.hh"
 
 namespace BeeCoLL
@@ -41,7 +53,7 @@ namespace Frames
         ZIGBEE_END_DEVICE_EXTENDED_TIMEOUT = 0x40
     };
 
-    class ExtendedTransmitStatus : public Frame
+    class BEECOLL_API ExtendedTransmitStatus : public Frame
     {
     public:
         explicit ExtendedTransmitStatus(const std::vector<uint8_t>& frame_data = {});

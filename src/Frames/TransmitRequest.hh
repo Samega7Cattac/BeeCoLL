@@ -1,6 +1,18 @@
 #ifndef BEECOLL_FRAMES_TRANSMITREQUEST_HH
 #define BEECOLL_FRAMES_TRANSMITREQUEST_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 #include "Frame.hh"
 
 #include <vector>
@@ -20,7 +32,7 @@ namespace Frames
         USE_EXTENDED_TIMEOUT = 0x40
     };
 
-    class TransmitRequest : public Frame
+    class BEECOLL_API TransmitRequest : public Frame
     {
     public:
         explicit TransmitRequest(const std::vector<uint8_t>& frame_data = {});

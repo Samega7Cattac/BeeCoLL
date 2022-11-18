@@ -2,14 +2,14 @@
 #define BEECOLL_SERIAL_NODE_HH
 
 #ifdef _WIN32
-    #ifdef DBRIDGEEXT_XBEE_BUILD
-        #define DBRIDGEEXT_XBEE_API __declspec(dllexport)
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
     #else
-        #define DBRIDGEEXT_XBEE_API __declspec(dllimport)
+        #define BEECOLL_API __declspec(dllimport)
     #endif
 #elif __unix__
-    #ifndef DBRIDGEEXT_XBEE_API
-        #define DBRIDGEEXT_XBEE_API
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
     #endif
 #endif
 
@@ -19,7 +19,7 @@
 
 namespace BeeCoLL
 {
-    class DBRIDGEEXT_XBEE_API SerialInterface
+    class BEECOLL_API SerialInterface
     {
     public:
         explicit SerialInterface(const std::string& serial_device);
