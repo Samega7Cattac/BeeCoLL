@@ -1,13 +1,13 @@
 #include "Coordinator.hh"
-#include "Frames/ExtendedTransmitStatus.hh"
-#include "Frames/ExplicitRxIndicator.hh"
-#include "Frames/LocalATCommandRequest.hh"
-#include "Frames/LocalATCommandResponse.hh"
-#include "Frames/ExplicitRxIndicator.hh"
+#include "../Frames/ExtendedTransmitStatus.hh"
+#include "../Frames/ExplicitRxIndicator.hh"
+#include "../Frames/LocalATCommandRequest.hh"
+#include "../Frames/LocalATCommandResponse.hh"
+#include "../Frames/ExplicitRxIndicator.hh"
 
-#include "ATCommands/NT.hh"
-#include "ATCommands/SL.hh"
-#include "ATCommands/SH.hh"
+#include "../ATCommands/NT.hh"
+#include "../ATCommands/SL.hh"
+#include "../ATCommands/SH.hh"
 
 // STD headers
 #include <cstring>

@@ -14,11 +14,11 @@
 #endif
 
 // BeeCoLL headers
-#include "Frames/Frame.hh"
+#include "../Frames/Frame.hh"
 #include "Node.hh"
 #include "SerialInterface.hh"
 #include "NetworkNode.hh"
-#include "ATCommands/ND.hh"
+#include "../ATCommands/ND.hh"
 
 // STD headers
 #include <string>
