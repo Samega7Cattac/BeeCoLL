@@ -186,7 +186,11 @@ namespace DBRIDGEEXT_XBEE_API BeeCoLL
         //!
         uint16_t m_OP;
 
-        
+        uint8_t m_node_type;
+
+        uint8_t GetNodeType();
+
+        void SetNodeType(uint8_t node_type);
     };
 }
 

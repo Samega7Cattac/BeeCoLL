@@ -3,6 +3,8 @@
 
 #include "ATCommand.hh"
 
+constexpr uint16_t SH_ATCOMMAND_CODE = 0x5348;
+
 namespace BeeCoLL
 {
 namespace ATCommands
@@ -11,6 +13,7 @@ namespace ATCommands
     {
     public:
         SH();
+        SH(const ATCommand& other);
         ~SH();
     };
 };

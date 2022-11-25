@@ -29,13 +29,16 @@ namespace Frames
 
         uint8_t GetFrameID();
 
-        void SetFrameID(uint8_t frame_id);
+        void SetFrameID(uint8_t frame_id = 0);
 
         uint64_t GetDestUniqueAddr();
         void SetDestUniqueAddr(const uint64_t& addr);
 
         uint16_t GetDestNetworkAddr();
         void SetDestNetworkAddr(uint16_t addr);
+
+        uint8_t GetBroadcastRadius();
+        void SetBroadCastRadius(uint8_t radius);
 
         std::vector<TransmitOptions> GetTransmitOptions();
         void SetTransmitOptions(const std::vector<TransmitOptions>& options);

@@ -29,16 +29,18 @@ namespace Frames
         ~LocalATCommandResponse();
 
         uint8_t GetFrameID();
-        void SetFrameID(uint8_t frame_id);
+        void SetFrameID(uint8_t frame_id = 0);
 
         CommandStatus GetStatus();
         void SetStatus(CommandStatus status);
 
-        std::shared_ptr<ATCommand> GetATCommand();
+        ATCommand GetATCommand();
         void SetATCommand(const ATCommand& at_command);
 
     private:
-        std::shared_ptr<ATCommand> m_at_command;
+        ATCommand m_at_command;
+
+        void GenerateATCommand();
     };
 };
 };

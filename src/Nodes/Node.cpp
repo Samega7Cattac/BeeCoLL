@@ -19,7 +19,7 @@ Node::GetUniqueAddress()
     // Puts the least significant number in the least significant part of the address.
     address = m_SL;
     // Shifts by 32 bits and puts SH in address by OR operation.
-    address |= m_SH << sizeof(uint32_t);
+    address |= static_cast<uint64_t>(m_SH) << 32;
 
     return address;
 }
@@ -72,4 +72,16 @@ void
 Node::SetPANIdentifier(uint16_t new_id)
 {
     m_ID = new_id;
+}
+
+uint8_t
+Node::GetNodeType()
+{
+    return m_node_type;
+}
+
+void
+Node::SetNodeType(uint8_t node_type)
+{
+    m_node_type = node_type;
 }

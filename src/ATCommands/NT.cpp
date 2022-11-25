@@ -4,7 +4,13 @@ using namespace BeeCoLL;
 using namespace BeeCoLL::ATCommands;
 
 NT::NT() :
-    ATCommand(ATCommandType::NT, "Node Discover Time")
+    ATCommand(NT_ATCOMMAND_CODE)
+{
+
+}
+
+NT::NT(const ATCommand& other) :
+    ATCommand(other)
 {
 
 }

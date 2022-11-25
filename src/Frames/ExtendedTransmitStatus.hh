@@ -49,6 +49,7 @@ namespace Frames
         ~ExtendedTransmitStatus();
 
         uint8_t GetFrameID();
+        void SetFrameID(uint8_t frame_id);
         uint16_t GetDestNetworkAddr();
         uint8_t GetRetryCount();
         DeliveryStatus GetDeliveryStatus();

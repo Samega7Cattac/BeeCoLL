@@ -8,6 +8,7 @@
 using namespace BeeCoLL;
 
 Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
+    m_id(0),
     m_type(type),
     m_data(data)
 {
@@ -45,6 +46,8 @@ Frame::Frame(const std::vector<uint8_t>& frame)
 }
 
 Frame::Frame(const Frame& other_frame) :
+    m_response_types(other_frame.m_response_types),
+    m_id(other_frame.m_id),
     m_length_msb(other_frame.m_length_msb),
     m_length_lsb(other_frame.m_length_lsb),
     m_type(other_frame.m_type),
@@ -92,9 +95,9 @@ Frame::SetDataByte(unsigned int byte_index, unsigned char byte)
     {
         m_data.resize(byte_index + 1);
         RecalculateDataSize();
-        RecalculateChecksum();
     }
     m_data[byte_index] = byte;
+    RecalculateChecksum();
 }
 
 bool
@@ -121,9 +124,9 @@ Frame::SetDataBit(unsigned int byte_index, unsigned char bit_offset, bool bit)
     {
         m_data.resize(byte_index);
         RecalculateDataSize();
-        RecalculateChecksum();
     }
     m_data[byte_index] |= (bit << (7 - bit_offset));
+    RecalculateChecksum();
 }
 
 void
@@ -146,11 +149,22 @@ Frame::GetDataBitMask(unsigned int byte_index, unsigned char mask)
 void
 Frame::InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data)
 {
-    m_data.insert(m_data.begin() + byte_index, data.begin(), data.end());
+    if (byte_index + data.size() > m_data.size())
+    {
+        // TODO: throw something
+        std::cout << "get bit out of scope" << std::endl;
+        m_data.resize(byte_index + data.size());
+    }
+    for (unsigned int byte = 0; byte < data.size(); ++byte)
+    {
+        m_data[byte_index + byte] = data[byte];
+    }
+    RecalculateDataSize();
+    RecalculateChecksum();
 }
 
 FrameType
-Frame::GetType()
+Frame::GetType() const
 {
     return m_type;
 }
@@ -185,12 +199,32 @@ Frame::GetFrame() const
     frame.push_back(m_length_lsb);
     frame.push_back(m_type);
     std::copy(m_data.begin(), m_data.end(), std::back_inserter(frame));
-    // for (char data_byte : m_data)
-    // {
-    //     frame.push_back(data_byte);
-    // }
     frame.push_back(m_checksum);
     return frame;
+}
+
+uint8_t
+Frame::GetID() const
+{
+    return m_id;
+}
+
+std::vector<uint8_t>
+Frame::GetResponseTypes() const
+{
+    return m_response_types;
+}
+
+void
+Frame::SetID(uint8_t id)
+{
+    m_id = id;
+}
+
+void
+Frame::SetResponseTypes(const std::vector<uint8_t>& response_types)
+{
+    m_response_types = response_types;
 }
 
 void
@@ -198,12 +232,6 @@ Frame::RecalculateChecksum()
 {
     unsigned char sum = m_type;
     sum += std::accumulate(m_data.begin(), m_data.end(), 0);
-    
-    // for (unsigned char byte : m_data)
-    // {
-    //     sum += byte;
-    // }
-
     m_checksum = 0xFF - sum;
 }
 

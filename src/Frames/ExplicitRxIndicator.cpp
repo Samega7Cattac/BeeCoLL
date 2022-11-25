@@ -23,6 +23,7 @@ constexpr unsigned char CLUSTER_ID_OFFSET2 = 12;
 constexpr unsigned char PROFILE_ID_OFFSET1 = 15;
 constexpr unsigned char PROFILE_ID_OFFSET2 = 14;
 constexpr unsigned char RECEIVE_OPTIONS_OFFSET = 16;
+constexpr uint8_t RECEIVED_DATA_OFFSET = 17;
 
 using namespace BeeCoLL;
 using namespace BeeCoLL::Frames;
@@ -124,7 +125,7 @@ std::vector<uint8_t>
 ExplicitRxIndicator::GetReceivedData()
 {
     std::vector<uint8_t> data = GetData();
-    data.erase(data.begin(), data.begin() + 11);
+    data.erase(data.begin(), data.begin() + RECEIVED_DATA_OFFSET);
     return data;
 }
 

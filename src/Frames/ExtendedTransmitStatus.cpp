@@ -10,10 +10,12 @@ constexpr uint8_t RETRY_COUNT_OFFSET = 3;
 constexpr uint8_t DELIVERY_STATUS_OFFSET = 4;
 constexpr uint8_t DISCOVERY_STATUS_OFFSET = 5;
 
+static uint8_t frame_id = 1;
+
 ExtendedTransmitStatus::ExtendedTransmitStatus(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::TRANSMIT_STATUS, frame_data)
 {
-
+    SetFrameID(frame_id++);
 }
 
 ExtendedTransmitStatus::ExtendedTransmitStatus(const Frame& other) : 
@@ -31,6 +33,13 @@ uint8_t
 ExtendedTransmitStatus::GetFrameID()
 {
     return GetDataByte(FRAMEID_OFFSET);
+}
+
+void
+ExtendedTransmitStatus::SetFrameID(uint8_t frame_id)
+{
+    SetID(frame_id);
+    SetDataByte(FRAMEID_OFFSET, frame_id);
 }
 
 uint16_t

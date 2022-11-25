@@ -4,7 +4,13 @@ using namespace BeeCoLL;
 using namespace BeeCoLL::ATCommands;
 
 SH::SH() :
-    ATCommand(ATCommandType::SH, "Serial Number High")
+    ATCommand(SH_ATCOMMAND_CODE)
+{
+
+}
+
+SH::SH(const ATCommand& other) :
+    ATCommand(other)
 {
 
 }

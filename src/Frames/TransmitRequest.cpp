@@ -18,17 +18,22 @@ constexpr uint8_t DEST_ADDR64_OFFSET7 = 2;
 constexpr uint8_t DEST_ADDR64_OFFSET8 = 1;
 constexpr uint8_t DEST_ADDR16_OFFSET1 = 10;
 constexpr uint8_t DEST_ADDR16_OFFSET2 = 9;
-constexpr uint8_t TRANSMIT_OPTIONS_OFFSET = 11;
+constexpr uint8_t BROADCAST_RADIUS_OFFSET = 11;
+constexpr uint8_t TRANSMIT_OPTIONS_OFFSET = 12;
+
+static uint8_t frame_id = 1;
 
 TransmitRequest::TransmitRequest(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::TRANSMIT_REQUEST, frame_data)
 {
-    SetFrameID(std::rand() % 255 + 1);
+    SetFrameID(frame_id++);
     SetDestNetworkAddr(0x000000000000FFFF);
     SetDestNetworkAddr(0xFFFE);
     std::vector<TransmitOptions> default_option;
     default_option.emplace_back(TransmitOptions::DEFAULT_USE_TO);
     SetTransmitOptions(default_option);
+    SetBroadCastRadius(0);
+    SetResponseTypes({FrameType::EXPLICIT_RX_INDICATOR, FrameType::RECEIVE_PACKET});
 }
 
 TransmitRequest::TransmitRequest(const Frame& other) : 
@@ -51,6 +56,7 @@ TransmitRequest::GetFrameID()
 void
 TransmitRequest::SetFrameID(uint8_t frame_id)
 {
+    SetID(frame_id);
     SetDataByte(FRAME_ID_OFFSET, frame_id);
 }
 
@@ -104,6 +110,18 @@ TransmitRequest::SetDestNetworkAddr(uint16_t addr)
     }
 }
 
+uint8_t
+TransmitRequest::GetBroadcastRadius()
+{
+    return GetDataByte(BROADCAST_RADIUS_OFFSET);
+}
+
+void
+TransmitRequest::SetBroadCastRadius(uint8_t radius)
+{
+    SetDataByte(BROADCAST_RADIUS_OFFSET, radius);
+}
+
 std::vector<TransmitOptions>
 TransmitRequest::GetTransmitOptions()
 {
@@ -150,6 +168,7 @@ std::vector<uint8_t>
 TransmitRequest::GetPayload()
 {
     std::vector<uint8_t> payload = GetData();
+    // TODO: Check this number
     payload.erase(payload.begin(), payload.begin() + 11);
     return payload;
 }
@@ -157,5 +176,5 @@ TransmitRequest::GetPayload()
 void
 TransmitRequest::SetPayload(const std::vector<uint8_t>& payload)
 {
-    InsertDataAT(14, payload);
+    InsertDataAT(13, payload);
 }

@@ -48,6 +48,15 @@ namespace BeeCoLL
         
         virtual ~Frame();
 
+        FrameType GetType() const;
+
+        std::vector<uint8_t> GetFrame() const;
+
+        uint8_t GetID() const;
+
+        std::vector<uint8_t> GetResponseTypes() const;
+
+    protected:
         std::vector<uint8_t> GetData();
         void SetData(const std::vector<uint8_t>& data);
         uint8_t GetDataByte(unsigned int byte_index);
@@ -62,14 +71,18 @@ namespace BeeCoLL
 
         void InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data);
 
-        FrameType GetType();
         void SetType(FrameType type);
 
         bool CompareChecksum(uint8_t other_checksum);
 
-        std::vector<uint8_t> GetFrame() const;
+        void SetID(uint8_t id);
+
+        void SetResponseTypes(const std::vector<uint8_t>& response_types);
 
     private:
+        std::vector<uint8_t> m_response_types;
+
+        uint8_t m_id;
 
         uint8_t m_length_msb;
 

@@ -3,6 +3,8 @@
 
 #include "ATCommand.hh"
 
+constexpr uint16_t MY_ATCOMMAND_CODE = 0x4d59;
+
 namespace BeeCoLL
 {
 namespace ATCommands
@@ -11,6 +13,7 @@ namespace ATCommands
     {
     public:
         MY();
+        MY(const ATCommand& other);
         ~MY();
     };
 };

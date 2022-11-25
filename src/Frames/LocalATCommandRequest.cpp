@@ -9,18 +9,19 @@ constexpr uint8_t FRAMEID_OFFSET = 0;
 constexpr uint8_t AT_COMMAND_MSB_OFFSET = 5;
 constexpr uint8_t AT_COMMAND_LSB_OFFSET = 6;
 
-static uint8_t frame_id = 0x01;
+static uint8_t frame_id = 1;
 
 LocalATCommandRequest::LocalATCommandRequest(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::AT_COMMAND, frame_data)
 {
-    
+    SetFrameID(frame_id++);
+    SetResponseTypes({FrameType::AT_COMMAND_RESPONSE});
 }
 
 LocalATCommandRequest::LocalATCommandRequest(const Frame& other) : 
     Frame(other)
 {
-
+    
 }
 
 LocalATCommandRequest::~LocalATCommandRequest()
@@ -37,6 +38,7 @@ LocalATCommandRequest::GetFrameID()
 void
 LocalATCommandRequest::SetFrameID(uint8_t frame_id)
 {
+    SetID(frame_id);
     SetDataByte(FRAMEID_OFFSET, frame_id);
 }
 
@@ -53,7 +55,7 @@ LocalATCommandRequest::SetATCommand(const ATCommand& at_command)
     std::vector<uint8_t> data;
     // TODO: find a better way to insert an container
     // TODO: remove hardcoded frame id
-    data.emplace_back(frame_id++);
+    data.emplace_back(GetFrameID());
     data.emplace_back(at_command_code >> 8);
     data.emplace_back(static_cast<uint8_t>(at_command_code));
 
