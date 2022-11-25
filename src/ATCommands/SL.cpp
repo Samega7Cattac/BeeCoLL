@@ -1,21 +1,18 @@
 #include "SL.hh"
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::ATCommands;
-
-SL::SL() :
+BeeCoLL::ATCommands::SL::SL() :
     ATCommand(SL_ATCOMMAND_CODE)
 {
 
 }
 
-SL::SL(const ATCommand& other) :
+BeeCoLL::ATCommands::SL::SL(const ATCommand& other) :
     ATCommand(other)
 {
 
 }
 
-SL::~SL()
+BeeCoLL::ATCommands::SL::~SL()
 {
 
 }

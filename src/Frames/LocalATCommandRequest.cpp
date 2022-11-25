@@ -2,54 +2,51 @@
 
 #include <iostream>
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::Frames;
-
 constexpr uint8_t FRAMEID_OFFSET = 0;
 constexpr uint8_t AT_COMMAND_MSB_OFFSET = 5;
 constexpr uint8_t AT_COMMAND_LSB_OFFSET = 6;
 
 static uint8_t frame_id = 1;
 
-LocalATCommandRequest::LocalATCommandRequest(const std::vector<uint8_t>& frame_data) : 
+BeeCoLL::Frames::LocalATCommandRequest::LocalATCommandRequest(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::AT_COMMAND, frame_data)
 {
     SetFrameID(frame_id++);
     SetResponseTypes({FrameType::AT_COMMAND_RESPONSE});
 }
 
-LocalATCommandRequest::LocalATCommandRequest(const Frame& other) : 
+BeeCoLL::Frames::LocalATCommandRequest::LocalATCommandRequest(const Frame& other) : 
     Frame(other)
 {
     
 }
 
-LocalATCommandRequest::~LocalATCommandRequest()
+BeeCoLL::Frames::LocalATCommandRequest::~LocalATCommandRequest()
 {
 
 }
 
 uint8_t
-LocalATCommandRequest::GetFrameID()
+BeeCoLL::Frames::LocalATCommandRequest::GetFrameID()
 {
     return GetDataByte(FRAMEID_OFFSET);
 }
 
 void
-LocalATCommandRequest::SetFrameID(uint8_t frame_id)
+BeeCoLL::Frames::LocalATCommandRequest::SetFrameID(uint8_t frame_id)
 {
     SetID(frame_id);
     SetDataByte(FRAMEID_OFFSET, frame_id);
 }
 
-std::shared_ptr<ATCommand>
-LocalATCommandRequest::GetATCommand()
+std::shared_ptr<BeeCoLL::ATCommand>
+BeeCoLL::Frames::LocalATCommandRequest::GetATCommand()
 {
     return m_at_command;
 }
 
 void
-LocalATCommandRequest::SetATCommand(const ATCommand& at_command)
+BeeCoLL::Frames::LocalATCommandRequest::SetATCommand(const ATCommand& at_command)
 {
     uint16_t at_command_code = at_command.GetATCommand();
     std::vector<uint8_t> data;

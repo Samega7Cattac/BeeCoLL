@@ -5,9 +5,7 @@
 #include <algorithm>
 #include <numeric>
 
-using namespace BeeCoLL;
-
-Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
+BeeCoLL::Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
     m_id(0),
     m_type(type),
     m_data(data)
@@ -18,7 +16,7 @@ Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
 
 #include <iostream>
 
-Frame::Frame(const std::vector<uint8_t>& frame)
+BeeCoLL::Frame::Frame(const std::vector<uint8_t>& frame)
 {
     if (frame[0] != START_DELIMITER)
     {
@@ -45,7 +43,7 @@ Frame::Frame(const std::vector<uint8_t>& frame)
     }
 }
 
-Frame::Frame(const Frame& other_frame) :
+BeeCoLL::Frame::Frame(const Frame& other_frame) :
     m_response_types(other_frame.m_response_types),
     m_id(other_frame.m_id),
     m_length_msb(other_frame.m_length_msb),
@@ -57,19 +55,19 @@ Frame::Frame(const Frame& other_frame) :
 
 }
 
-Frame::~Frame()
+BeeCoLL::Frame::~Frame()
 {
 
 }
 
 std::vector<uint8_t>
-Frame::GetData()
+BeeCoLL::Frame::GetData()
 {
     return m_data;
 }
 
 void
-Frame::SetData(const std::vector<uint8_t>& data)
+BeeCoLL::Frame::SetData(const std::vector<uint8_t>& data)
 {
     m_data = data;
     RecalculateDataSize();
@@ -77,7 +75,7 @@ Frame::SetData(const std::vector<uint8_t>& data)
 }
 
 unsigned char
-Frame::GetDataByte(unsigned int byte_index)
+BeeCoLL::Frame::GetDataByte(unsigned int byte_index)
 {
     if (byte_index >= m_data.size())
     {
@@ -89,7 +87,7 @@ Frame::GetDataByte(unsigned int byte_index)
 }
 
 void
-Frame::SetDataByte(unsigned int byte_index, unsigned char byte)
+BeeCoLL::Frame::SetDataByte(unsigned int byte_index, unsigned char byte)
 {
     if (byte_index >= m_data.size())
     {
@@ -101,7 +99,7 @@ Frame::SetDataByte(unsigned int byte_index, unsigned char byte)
 }
 
 bool
-Frame::GetDataBit(unsigned int byte_index, unsigned char bit_offset)
+BeeCoLL::Frame::GetDataBit(unsigned int byte_index, unsigned char bit_offset)
 {
     if (byte_index > m_data.size())
     {
@@ -112,13 +110,13 @@ Frame::GetDataBit(unsigned int byte_index, unsigned char bit_offset)
 }
 
 bool
-Frame::GetDataBit(unsigned int bit_index)
+BeeCoLL::Frame::GetDataBit(unsigned int bit_index)
 {
     return GetDataBit(bit_index / 8, bit_index % 8);
 }
 
 void
-Frame::SetDataBit(unsigned int byte_index, unsigned char bit_offset, bool bit)
+BeeCoLL::Frame::SetDataBit(unsigned int byte_index, unsigned char bit_offset, bool bit)
 {
     if (byte_index > m_data.size())
     {
@@ -130,13 +128,13 @@ Frame::SetDataBit(unsigned int byte_index, unsigned char bit_offset, bool bit)
 }
 
 void
-Frame::SetDataBit(unsigned int bit_index, bool bit)
+BeeCoLL::Frame::SetDataBit(unsigned int bit_index, bool bit)
 {
     SetDataBit(bit_index / 8, bit_index % 8, bit);
 }
 
 bool
-Frame::GetDataBitMask(unsigned int byte_index, unsigned char mask)
+BeeCoLL::Frame::GetDataBitMask(unsigned int byte_index, unsigned char mask)
 {
     if (byte_index > m_data.size())
     {
@@ -147,7 +145,7 @@ Frame::GetDataBitMask(unsigned int byte_index, unsigned char mask)
 }
 
 void
-Frame::InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data)
+BeeCoLL::Frame::InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data)
 {
     if (byte_index + data.size() > m_data.size())
     {
@@ -163,14 +161,14 @@ Frame::InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data)
     RecalculateChecksum();
 }
 
-FrameType
-Frame::GetType() const
+BeeCoLL::FrameType
+BeeCoLL::Frame::GetType() const
 {
     return m_type;
 }
 
 void
-Frame::SetType(FrameType type)
+BeeCoLL::Frame::SetType(FrameType type)
 {
     if (type > INPUT_FRAME_DELIMITER)
     {
@@ -181,7 +179,7 @@ Frame::SetType(FrameType type)
 }
 
 bool
-Frame::CompareChecksum(unsigned char other_checksum)
+BeeCoLL::Frame::CompareChecksum(unsigned char other_checksum)
 {
     if (m_checksum == other_checksum)
     {
@@ -191,7 +189,7 @@ Frame::CompareChecksum(unsigned char other_checksum)
 }
 
 std::vector<uint8_t>
-Frame::GetFrame() const
+BeeCoLL::Frame::GetFrame() const
 {
     std::vector<uint8_t> frame;
     frame.push_back(START_DELIMITER);
@@ -204,31 +202,31 @@ Frame::GetFrame() const
 }
 
 uint8_t
-Frame::GetID() const
+BeeCoLL::Frame::GetID() const
 {
     return m_id;
 }
 
 std::vector<uint8_t>
-Frame::GetResponseTypes() const
+BeeCoLL::Frame::GetResponseTypes() const
 {
     return m_response_types;
 }
 
 void
-Frame::SetID(uint8_t id)
+BeeCoLL::Frame::SetID(uint8_t id)
 {
     m_id = id;
 }
 
 void
-Frame::SetResponseTypes(const std::vector<uint8_t>& response_types)
+BeeCoLL::Frame::SetResponseTypes(const std::vector<uint8_t>& response_types)
 {
     m_response_types = response_types;
 }
 
 void
-Frame::RecalculateChecksum()
+BeeCoLL::Frame::RecalculateChecksum()
 {
     unsigned char sum = m_type;
     sum += std::accumulate(m_data.begin(), m_data.end(), 0);
@@ -236,7 +234,7 @@ Frame::RecalculateChecksum()
 }
 
 void
-Frame::RecalculateDataSize()
+BeeCoLL::Frame::RecalculateDataSize()
 {
     uint16_t frame_data_length = 1 + m_data.size();
 

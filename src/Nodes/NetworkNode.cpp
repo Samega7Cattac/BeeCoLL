@@ -1,8 +1,6 @@
 #include "NetworkNode.hh"
 
-using namespace BeeCoLL;
-
-NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordinator) :
+BeeCoLL::NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordinator) :
     m_info(node_info),
     m_coordinator(coordinator)
 {
@@ -11,7 +9,7 @@ NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordina
     SetUniqueAddress(unique_addr);
 }
 
-NetworkNode::NetworkNode(const NetworkNode& other) :
+BeeCoLL::NetworkNode::NetworkNode(const NetworkNode& other) :
     m_info(other.m_info),
     m_coordinator(other.m_coordinator)
 {
@@ -20,19 +18,19 @@ NetworkNode::NetworkNode(const NetworkNode& other) :
     SetUniqueAddress(unique_addr);
 }
 
-NetworkNode::~NetworkNode()
+BeeCoLL::NetworkNode::~NetworkNode()
 {
 
 }
 
 void
-NetworkNode::SetCallback(const std::function<void(const Frame&)>& callback)
+BeeCoLL::NetworkNode::SetCallback(const std::function<void(const Frame&)>& callback)
 {
     m_callback = callback;
 }
 
 void
-NetworkNode::TriggerCallback(const Frame& frame)
+BeeCoLL::NetworkNode::TriggerCallback(const Frame& frame)
 {
     if (m_callback)
     {

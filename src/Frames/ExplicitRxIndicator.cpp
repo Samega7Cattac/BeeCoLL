@@ -25,29 +25,25 @@ constexpr unsigned char PROFILE_ID_OFFSET2 = 14;
 constexpr unsigned char RECEIVE_OPTIONS_OFFSET = 16;
 constexpr uint8_t RECEIVED_DATA_OFFSET = 17;
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::Frames;
-
-
-ExplicitRxIndicator::ExplicitRxIndicator(const std::vector<uint8_t>& frame_data) : 
+BeeCoLL::Frames::ExplicitRxIndicator::ExplicitRxIndicator(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::EXPLICIT_RX_INDICATOR, frame_data)
 {
 
 }
 
-ExplicitRxIndicator::ExplicitRxIndicator(const Frame& other) : 
+BeeCoLL::Frames::ExplicitRxIndicator::ExplicitRxIndicator(const Frame& other) : 
     Frame(other)
 {
 
 }
 
-ExplicitRxIndicator::~ExplicitRxIndicator()
+BeeCoLL::Frames::ExplicitRxIndicator::~ExplicitRxIndicator()
 {
 
 }
 
 uint64_t
-ExplicitRxIndicator::GetSourceUniqueAddr()
+BeeCoLL::Frames::ExplicitRxIndicator::GetSourceUniqueAddr()
 {
     uint64_t addr = GetDataByte(SOURCE_ADDR64_OFFSET1);
     addr |= GetDataByte(SOURCE_ADDR64_OFFSET2) << 8;
@@ -61,7 +57,7 @@ ExplicitRxIndicator::GetSourceUniqueAddr()
 }
 
 uint16_t
-ExplicitRxIndicator::GetSourceNetworkAddr()
+BeeCoLL::Frames::ExplicitRxIndicator::GetSourceNetworkAddr()
 {
     uint16_t addr = GetDataByte(SOURCE_NETWORK_ADDR16_OFFSET1);
     addr |= GetDataByte(SOURCE_NETWORK_ADDR16_OFFSET2);
@@ -69,19 +65,19 @@ ExplicitRxIndicator::GetSourceNetworkAddr()
 }
 
 uint8_t
-ExplicitRxIndicator::GetSourceEndpoint()
+BeeCoLL::Frames::ExplicitRxIndicator::GetSourceEndpoint()
 {
     return GetDataByte(SOURCE_ENDPOINT_OFFSET);
 }
 
 uint8_t
-ExplicitRxIndicator::GetDestEndpoint()
+BeeCoLL::Frames::ExplicitRxIndicator::GetDestEndpoint()
 {
     return GetDataByte(DEST_ENDPOINT_OFFSET);
 }
 
 uint16_t
-ExplicitRxIndicator::GetClusterID()
+BeeCoLL::Frames::ExplicitRxIndicator::GetClusterID()
 {
     uint16_t id = GetDataByte(CLUSTER_ID_OFFSET1);
     id |= GetDataByte(CLUSTER_ID_OFFSET2) << 8;
@@ -89,15 +85,15 @@ ExplicitRxIndicator::GetClusterID()
 }
 
 uint16_t
-ExplicitRxIndicator::GetProfileID()
+BeeCoLL::Frames::ExplicitRxIndicator::GetProfileID()
 {
     uint16_t id = GetDataByte(PROFILE_ID_OFFSET1);
     id |= GetDataByte(PROFILE_ID_OFFSET2) << 8;
     return id;
 }
 
-std::vector<ReceiveOptions>
-ExplicitRxIndicator::GetReceiveOptions()
+std::vector<BeeCoLL::Frames::ReceiveOptions>
+BeeCoLL::Frames::ExplicitRxIndicator::GetReceiveOptions()
 {
     unsigned char byte = GetDataByte(RECEIVE_OPTIONS_OFFSET);
     std::vector<ReceiveOptions> v;
@@ -122,7 +118,7 @@ ExplicitRxIndicator::GetReceiveOptions()
 }
 
 std::vector<uint8_t>
-ExplicitRxIndicator::GetReceivedData()
+BeeCoLL::Frames::ExplicitRxIndicator::GetReceivedData()
 {
     std::vector<uint8_t> data = GetData();
     data.erase(data.begin(), data.begin() + RECEIVED_DATA_OFFSET);
@@ -130,7 +126,7 @@ ExplicitRxIndicator::GetReceivedData()
 }
 
 std::string
-ExplicitRxIndicator::GetReceivedDataToString()
+BeeCoLL::Frames::ExplicitRxIndicator::GetReceivedDataToString()
 {
     std::vector<uint8_t> data = GetReceivedData();
     std::string data_str;

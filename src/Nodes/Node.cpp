@@ -1,19 +1,17 @@
 #include "Node.hh"
 
-using namespace BeeCoLL;
-
-Node::Node()
+BeeCoLL::Node::Node()
 {
 
 }
 
-Node::~Node()
+BeeCoLL::Node::~Node()
 {
 
 }
 
 uint64_t
-Node::GetUniqueAddress()
+BeeCoLL::Node::GetUniqueAddress()
 {
     uint64_t address;
     // Puts the least significant number in the least significant part of the address.
@@ -25,19 +23,19 @@ Node::GetUniqueAddress()
 }
 
 uint16_t
-Node::GetNetworkAddress()
+BeeCoLL::Node::GetNetworkAddress()
 {
     return m_MY;
 }
 
 std::string
-Node::GetNodeIdentifier()
+BeeCoLL::Node::GetNodeIdentifier()
 {
     return m_NI;
 }
 
 uint16_t
-Node::GetPANIdentifier()
+BeeCoLL::Node::GetPANIdentifier()
 {
     // Check if the ID is in auto (set to 0).
     if (m_ID == 0)
@@ -50,38 +48,38 @@ Node::GetPANIdentifier()
 }
 
 void
-Node::SetUniqueAddress(uint64_t new_addr)
+BeeCoLL::Node::SetUniqueAddress(uint64_t new_addr)
 {
     m_SL = new_addr;
     m_SH = new_addr >> 32;
 }
 
 void
-Node::SetNetworkAddr(uint16_t new_addr)
+BeeCoLL::Node::SetNetworkAddr(uint16_t new_addr)
 {
     m_MY = new_addr;
 }
 
 void
-Node::SetNodeIdentifier(const std::string& new_id)
+BeeCoLL::Node::SetNodeIdentifier(const std::string& new_id)
 {
     m_NI = new_id;
 }
 
 void
-Node::SetPANIdentifier(uint16_t new_id)
+BeeCoLL::Node::SetPANIdentifier(uint16_t new_id)
 {
     m_ID = new_id;
 }
 
 uint8_t
-Node::GetNodeType()
+BeeCoLL::Node::GetNodeType()
 {
     return m_node_type;
 }
 
 void
-Node::SetNodeType(uint8_t node_type)
+BeeCoLL::Node::SetNodeType(uint8_t node_type)
 {
     m_node_type = node_type;
 }

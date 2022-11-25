@@ -4,9 +4,6 @@
 #include <numeric>
 #include <random>
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::Frames;
-
 constexpr uint8_t FRAME_ID_OFFSET = 0;
 constexpr uint8_t DEST_ADDR64_OFFSET1 = 8;
 constexpr uint8_t DEST_ADDR64_OFFSET2 = 7;
@@ -23,7 +20,7 @@ constexpr uint8_t TRANSMIT_OPTIONS_OFFSET = 12;
 
 static uint8_t frame_id = 1;
 
-TransmitRequest::TransmitRequest(const std::vector<uint8_t>& frame_data) : 
+BeeCoLL::Frames::TransmitRequest::TransmitRequest(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::TRANSMIT_REQUEST, frame_data)
 {
     SetFrameID(frame_id++);
@@ -36,32 +33,32 @@ TransmitRequest::TransmitRequest(const std::vector<uint8_t>& frame_data) :
     SetResponseTypes({FrameType::EXPLICIT_RX_INDICATOR, FrameType::RECEIVE_PACKET});
 }
 
-TransmitRequest::TransmitRequest(const Frame& other) : 
+BeeCoLL::Frames::TransmitRequest::TransmitRequest(const Frame& other) : 
     Frame(other)
 {
 
 }
 
-TransmitRequest::~TransmitRequest()
+BeeCoLL::Frames::TransmitRequest::~TransmitRequest()
 {
 
 }
 
 uint8_t
-TransmitRequest::GetFrameID()
+BeeCoLL::Frames::TransmitRequest::GetFrameID()
 {
     return GetDataByte(FRAME_ID_OFFSET);
 }
 
 void
-TransmitRequest::SetFrameID(uint8_t frame_id)
+BeeCoLL::Frames::TransmitRequest::SetFrameID(uint8_t frame_id)
 {
     SetID(frame_id);
     SetDataByte(FRAME_ID_OFFSET, frame_id);
 }
 
 uint64_t
-TransmitRequest::GetDestUniqueAddr()
+BeeCoLL::Frames::TransmitRequest::GetDestUniqueAddr()
 {
     uint64_t addr = GetDataByte(DEST_ADDR64_OFFSET1);
     addr |= GetDataByte(DEST_ADDR64_OFFSET2) << 8;
@@ -75,7 +72,7 @@ TransmitRequest::GetDestUniqueAddr()
 }
 
 void
-TransmitRequest::SetDestUniqueAddr(const uint64_t& addr)
+BeeCoLL::Frames::TransmitRequest::SetDestUniqueAddr(const uint64_t& addr)
 {
     SetDataByte(DEST_ADDR64_OFFSET1, addr);
     SetDataByte(DEST_ADDR64_OFFSET2, addr >> 8);
@@ -92,7 +89,7 @@ TransmitRequest::SetDestUniqueAddr(const uint64_t& addr)
 }
 
 uint16_t
-TransmitRequest::GetDestNetworkAddr()
+BeeCoLL::Frames::TransmitRequest::GetDestNetworkAddr()
 {
     uint16_t addr = GetDataByte(DEST_ADDR16_OFFSET1);
     addr |= GetDataByte(DEST_ADDR16_OFFSET2) << 8;
@@ -100,7 +97,7 @@ TransmitRequest::GetDestNetworkAddr()
 }
 
 void
-TransmitRequest::SetDestNetworkAddr(uint16_t addr)
+BeeCoLL::Frames::TransmitRequest::SetDestNetworkAddr(uint16_t addr)
 {
     SetDataByte(DEST_ADDR16_OFFSET1, addr);
     SetDataByte(DEST_ADDR16_OFFSET2, addr >> 8);
@@ -111,19 +108,19 @@ TransmitRequest::SetDestNetworkAddr(uint16_t addr)
 }
 
 uint8_t
-TransmitRequest::GetBroadcastRadius()
+BeeCoLL::Frames::TransmitRequest::GetBroadcastRadius()
 {
     return GetDataByte(BROADCAST_RADIUS_OFFSET);
 }
 
 void
-TransmitRequest::SetBroadCastRadius(uint8_t radius)
+BeeCoLL::Frames::TransmitRequest::SetBroadCastRadius(uint8_t radius)
 {
     SetDataByte(BROADCAST_RADIUS_OFFSET, radius);
 }
 
-std::vector<TransmitOptions>
-TransmitRequest::GetTransmitOptions()
+std::vector<BeeCoLL::Frames::TransmitOptions>
+BeeCoLL::Frames::TransmitRequest::GetTransmitOptions()
 {
     uint8_t byte = GetDataByte(TRANSMIT_OPTIONS_OFFSET);
     std::vector<TransmitOptions> v;
@@ -158,14 +155,14 @@ TransmitRequest::GetTransmitOptions()
 }
 
 void
-TransmitRequest::SetTransmitOptions(const std::vector<TransmitOptions>& options)
+BeeCoLL::Frames::TransmitRequest::SetTransmitOptions(const std::vector<TransmitOptions>& options)
 {
     uint8_t byte = std::accumulate(options.begin(), options.end(), 0);
     SetDataByte(TRANSMIT_OPTIONS_OFFSET, byte);
 }
 
 std::vector<uint8_t>
-TransmitRequest::GetPayload()
+BeeCoLL::Frames::TransmitRequest::GetPayload()
 {
     std::vector<uint8_t> payload = GetData();
     // TODO: Check this number
@@ -174,7 +171,7 @@ TransmitRequest::GetPayload()
 }
 
 void
-TransmitRequest::SetPayload(const std::vector<uint8_t>& payload)
+BeeCoLL::Frames::TransmitRequest::SetPayload(const std::vector<uint8_t>& payload)
 {
     InsertDataAT(13, payload);
 }

@@ -12,9 +12,7 @@
 // TODO: DEBUG headers
 #include <iostream>
 
-using namespace BeeCoLL;
-
-SerialInterface::SerialInterface(const std::string &serial_device)
+BeeCoLL::SerialInterface::SerialInterface(const std::string &serial_device)
 {
     m_serial_fd = open(serial_device.c_str(), O_RDWR);
     if (m_serial_fd < 0)
@@ -26,7 +24,7 @@ SerialInterface::SerialInterface(const std::string &serial_device)
     // ClearSerial();
 }
 
-SerialInterface::~SerialInterface()
+BeeCoLL::SerialInterface::~SerialInterface()
 {
     if (m_serial_fd >= 0)
     {
@@ -39,12 +37,13 @@ SerialInterface::~SerialInterface()
 }
 
 int
-SerialInterface::GetSerialFD() const
+BeeCoLL::SerialInterface::GetSerialFD() const
 {
     return m_serial_fd;
 }
 
-void SerialInterface::WriteToSerial(const std::vector<uint8_t>& data)
+void
+BeeCoLL::SerialInterface::WriteToSerial(const std::vector<uint8_t>& data)
 {
     unsigned int bytes = write(m_serial_fd, data.data(), data.size());
     if (bytes != data.size())
@@ -55,7 +54,7 @@ void SerialInterface::WriteToSerial(const std::vector<uint8_t>& data)
 }
 
 std::vector<uint8_t>
-SerialInterface::ReadFromSerial(std::size_t read_n_bytes)
+BeeCoLL::SerialInterface::ReadFromSerial(std::size_t read_n_bytes)
 {
     std::vector<uint8_t> data;
     data.resize(read_n_bytes);
@@ -82,7 +81,7 @@ SerialInterface::ReadFromSerial(std::size_t read_n_bytes)
 }
 
 void
-SerialInterface::LockFD(int fd)
+BeeCoLL::SerialInterface::LockFD(int fd)
 {
     if(flock(fd, LOCK_EX | LOCK_NB) == -1)
     {
@@ -91,7 +90,8 @@ SerialInterface::LockFD(int fd)
     }
 }
 
-void SerialInterface::ClearSerial()
+void
+BeeCoLL::SerialInterface::ClearSerial()
 {
     if (fcntl(m_serial_fd, F_SETFL, fcntl(m_serial_fd, F_GETFL) | O_NONBLOCK) < 0) {
         // TODO: throw something
@@ -111,7 +111,7 @@ void SerialInterface::ClearSerial()
 }
 
 void
-SerialInterface::SetParityBit(bool enable)
+BeeCoLL::SerialInterface::SetParityBit(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -135,7 +135,7 @@ SerialInterface::SetParityBit(bool enable)
 }
 
 void
-SerialInterface::SetStopBits(bool enable)
+BeeCoLL::SerialInterface::SetStopBits(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -159,7 +159,7 @@ SerialInterface::SetStopBits(bool enable)
 }
 
 void
-SerialInterface::SetBitsInByte(uint8_t bits)
+BeeCoLL::SerialInterface::SetBitsInByte(uint8_t bits)
 {
     if (bits < 5 || bits > 8)
     {
@@ -199,7 +199,7 @@ SerialInterface::SetBitsInByte(uint8_t bits)
 }
 
 void
-SerialInterface::SetControlFlow(bool enable)
+BeeCoLL::SerialInterface::SetControlFlow(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -223,7 +223,7 @@ SerialInterface::SetControlFlow(bool enable)
 }
 
 void
-SerialInterface::SetModemLine(bool enable)
+BeeCoLL::SerialInterface::SetModemLine(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -250,7 +250,7 @@ SerialInterface::SetModemLine(bool enable)
 }
 
 void
-SerialInterface::SetCanonicalMode(bool enable)
+BeeCoLL::SerialInterface::SetCanonicalMode(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -274,7 +274,7 @@ SerialInterface::SetCanonicalMode(bool enable)
 }
 
 void
-SerialInterface::SetEcho(bool enable)
+BeeCoLL::SerialInterface::SetEcho(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -302,7 +302,7 @@ SerialInterface::SetEcho(bool enable)
 }
 
 void
-SerialInterface::SetSignalChars(bool enable)
+BeeCoLL::SerialInterface::SetSignalChars(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -326,7 +326,7 @@ SerialInterface::SetSignalChars(bool enable)
 }
 
 void
-SerialInterface::SetSoftwareFlowControl(bool enable)
+BeeCoLL::SerialInterface::SetSoftwareFlowControl(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -354,7 +354,7 @@ SerialInterface::SetSoftwareFlowControl(bool enable)
 }
 
 void
-SerialInterface::SetOutputSpecialChars(bool enable)
+BeeCoLL::SerialInterface::SetOutputSpecialChars(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -390,7 +390,7 @@ SerialInterface::SetOutputSpecialChars(bool enable)
 }
 
 void
-SerialInterface::SetInputSpecialChars(bool enable)
+BeeCoLL::SerialInterface::SetInputSpecialChars(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -416,7 +416,7 @@ SerialInterface::SetInputSpecialChars(bool enable)
 }
 
 void
-SerialInterface::SetTimeoutSinceRead(uint8_t time)
+BeeCoLL::SerialInterface::SetTimeoutSinceRead(uint8_t time)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -435,7 +435,7 @@ SerialInterface::SetTimeoutSinceRead(uint8_t time)
 }
 
 void
-SerialInterface::SetTimeoutSinceReadFirstChar(uint8_t time)
+BeeCoLL::SerialInterface::SetTimeoutSinceReadFirstChar(uint8_t time)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -454,7 +454,7 @@ SerialInterface::SetTimeoutSinceReadFirstChar(uint8_t time)
 }
 
 void
-SerialInterface::SetInputBaudRate(unsigned int baudrate)
+BeeCoLL::SerialInterface::SetInputBaudRate(unsigned int baudrate)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -471,7 +471,7 @@ SerialInterface::SetInputBaudRate(unsigned int baudrate)
 }
 
 void
-SerialInterface::SetOutputBaudRate(unsigned int baudrate)
+BeeCoLL::SerialInterface::SetOutputBaudRate(unsigned int baudrate)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)
@@ -488,7 +488,7 @@ SerialInterface::SetOutputBaudRate(unsigned int baudrate)
 }
 
 void
-SerialInterface::SetHandOnLastCall(bool enable)
+BeeCoLL::SerialInterface::SetHandOnLastCall(bool enable)
 {
     struct termios tty_attr;
     if (tcgetattr(m_serial_fd, &tty_attr) != 0)

@@ -20,9 +20,7 @@
 // DEBUG HEADERS
 #include <iostream>
 
-using namespace BeeCoLL;
-
-Coordinator::Coordinator(const std::string& serial_device_path) :
+BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
     SerialInterface(serial_device_path)
 {
     // SetTimeoutSinceRead(30);
@@ -65,7 +63,7 @@ Coordinator::Coordinator(const std::string& serial_device_path) :
     SendAPICommand(ask_sh, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
 }
 
-Coordinator::~Coordinator()
+BeeCoLL::Coordinator::~Coordinator()
 {
     close(m_fd_write);
     uint64_t terminus_value = 1;
@@ -74,7 +72,7 @@ Coordinator::~Coordinator()
 }
 
 void
-Coordinator::SendAPICommand(const Frame& frame,
+BeeCoLL::Coordinator::SendAPICommand(const Frame& frame,
                             const std::function<void(const Frame&)>& callback_function)
 {
     uint64_t value;
@@ -87,14 +85,14 @@ Coordinator::SendAPICommand(const Frame& frame,
     uint64_t event_value = 1;
     write(m_fd_write, &event_value, sizeof(event_value));
 }
-std::vector<std::shared_ptr<NetworkNode>>
-Coordinator::GetNetworkNodes()
+std::vector<std::shared_ptr<BeeCoLL::NetworkNode>>
+BeeCoLL::Coordinator::GetNetworkNodes()
 {
     return m_network_nodes;
 }
 
 void
-Coordinator::StartDiscover()
+BeeCoLL::Coordinator::StartDiscover()
 {
     Frames::LocalATCommandRequest at_nt_frame;
     BeeCoLL::ATCommands::NT at_nt;
@@ -119,7 +117,7 @@ Coordinator::StartDiscover()
 }
 
 void
-Coordinator::RegisterCallback(uint8_t frame_id,
+BeeCoLL::Coordinator::RegisterCallback(uint8_t frame_id,
                               uint8_t frame_response_type,
                               std::function<void(const Frame&)> callback_function)
 {
@@ -127,7 +125,7 @@ Coordinator::RegisterCallback(uint8_t frame_id,
 }
 
 void
-Coordinator::InterfaceHandler()
+BeeCoLL::Coordinator::InterfaceHandler()
 {
     unsigned int max_fd = m_fd_terminus;
     if (GetSerialFD() > max_fd)
@@ -198,7 +196,7 @@ Coordinator::InterfaceHandler()
 }
 
 void
-Coordinator::Parser(const Frame& frame)
+BeeCoLL::Coordinator::Parser(const Frame& frame)
 {
     if (frame.GetType() == FrameType::EXPLICIT_RX_INDICATOR)
     {
@@ -227,7 +225,7 @@ Coordinator::Parser(const Frame& frame)
 }
 
 void
-Coordinator::ATResponseHandler(const Frame& frame)
+BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
 {
     if (frame.GetType() == FrameType::AT_COMMAND_RESPONSE)
     {
@@ -274,7 +272,7 @@ Coordinator::ATResponseHandler(const Frame& frame)
 }
 
 void
-Coordinator::AddNode(ATCommands::ND& node_info)
+BeeCoLL::Coordinator::AddNode(ATCommands::ND& node_info)
 {
     NetworkNodeInfo node;
     // node.digi_device_type = node_info.GetDigiDeviceType();

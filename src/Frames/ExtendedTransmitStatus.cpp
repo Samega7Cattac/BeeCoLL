@@ -1,8 +1,5 @@
 #include "ExtendedTransmitStatus.hh"
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::Frames;
-
 constexpr uint8_t FRAMEID_OFFSET = 0;
 constexpr uint8_t DEST_ADDRESS_MSB_OFFSET = 1;
 constexpr uint8_t DEST_ADDRESS_LSB_OFFSET = 2;
@@ -12,38 +9,38 @@ constexpr uint8_t DISCOVERY_STATUS_OFFSET = 5;
 
 static uint8_t frame_id = 1;
 
-ExtendedTransmitStatus::ExtendedTransmitStatus(const std::vector<uint8_t>& frame_data) : 
+BeeCoLL::Frames::ExtendedTransmitStatus::ExtendedTransmitStatus(const std::vector<uint8_t>& frame_data) : 
     Frame(FrameType::TRANSMIT_STATUS, frame_data)
 {
     SetFrameID(frame_id++);
 }
 
-ExtendedTransmitStatus::ExtendedTransmitStatus(const Frame& other) : 
+BeeCoLL::Frames::ExtendedTransmitStatus::ExtendedTransmitStatus(const Frame& other) : 
     Frame(other)
 {
 
 }
 
-ExtendedTransmitStatus::~ExtendedTransmitStatus()
+BeeCoLL::Frames::ExtendedTransmitStatus::~ExtendedTransmitStatus()
 {
 
 }
 
 uint8_t
-ExtendedTransmitStatus::GetFrameID()
+BeeCoLL::Frames::ExtendedTransmitStatus::GetFrameID()
 {
     return GetDataByte(FRAMEID_OFFSET);
 }
 
 void
-ExtendedTransmitStatus::SetFrameID(uint8_t frame_id)
+BeeCoLL::Frames::ExtendedTransmitStatus::SetFrameID(uint8_t frame_id)
 {
     SetID(frame_id);
     SetDataByte(FRAMEID_OFFSET, frame_id);
 }
 
 uint16_t
-ExtendedTransmitStatus::GetDestNetworkAddr()
+BeeCoLL::Frames::ExtendedTransmitStatus::GetDestNetworkAddr()
 {
     uint16_t address = GetDataByte(DEST_ADDRESS_LSB_OFFSET);
     address |= GetDataByte(DEST_ADDRESS_MSB_OFFSET) << sizeof(uint8_t);
@@ -51,19 +48,19 @@ ExtendedTransmitStatus::GetDestNetworkAddr()
 }
 
 uint8_t
-ExtendedTransmitStatus::GetRetryCount()
+BeeCoLL::Frames::ExtendedTransmitStatus::GetRetryCount()
 {
     return GetDataByte(RETRY_COUNT_OFFSET);
 }
 
-DeliveryStatus
-ExtendedTransmitStatus::GetDeliveryStatus()
+BeeCoLL::Frames::DeliveryStatus
+BeeCoLL::Frames::ExtendedTransmitStatus::GetDeliveryStatus()
 {
     return static_cast<DeliveryStatus>(GetDataByte(DELIVERY_STATUS_OFFSET));
 }
 
-DiscoveryStatus
-ExtendedTransmitStatus::GetDiscoveryStatus()
+BeeCoLL::Frames::DiscoveryStatus
+BeeCoLL::Frames::ExtendedTransmitStatus::GetDiscoveryStatus()
 {
     return static_cast<DiscoveryStatus>(GetDataByte(DISCOVERY_STATUS_OFFSET));
 }

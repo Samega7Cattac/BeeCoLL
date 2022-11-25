@@ -1,21 +1,18 @@
 #include "SH.hh"
 
-using namespace BeeCoLL;
-using namespace BeeCoLL::ATCommands;
-
-SH::SH() :
+BeeCoLL::ATCommands::SH::SH() :
     ATCommand(SH_ATCOMMAND_CODE)
 {
 
 }
 
-SH::SH(const ATCommand& other) :
+BeeCoLL::ATCommands::SH::SH(const ATCommand& other) :
     ATCommand(other)
 {
 
 }
 
-SH::~SH()
+BeeCoLL::ATCommands::SH::~SH()
 {
 
 }
