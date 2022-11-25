@@ -1,6 +1,18 @@
 #ifndef BEECOLL_FRAMES_LOCALATCOMMANDREQUEST_HH
 #define BEECOLL_FRAMES_LOCALATCOMMANDREQUEST_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // BEECOLL headers
 #include "Frame.hh"
 #include "ATCommands/ATCommand.hh"
@@ -13,7 +25,7 @@ namespace BeeCoLL
 {
 namespace Frames
 {
-    class LocalATCommandRequest : public Frame
+    class BEECOLL_API LocalATCommandRequest : public Frame
     {
     public:
         explicit LocalATCommandRequest(const std::vector<uint8_t>& frame_data = {});

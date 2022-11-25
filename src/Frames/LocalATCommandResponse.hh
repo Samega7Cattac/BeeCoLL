@@ -1,6 +1,18 @@
 #ifndef BEECOLL_FRAMES_LOCALATCOMMANDRESPONSE_HH
 #define BEECOLL_FRAMES_LOCALATCOMMANDRESPONSE_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // BEECOLL headers
 #include "Frame.hh"
 #include "ATCommands/ATCommand.hh"
@@ -21,7 +33,7 @@ namespace Frames
         INVALID_PARAM = 3
     };
 
-    class LocalATCommandResponse : public Frame
+    class BEECOLL_API LocalATCommandResponse : public Frame
     {
     public:
         explicit LocalATCommandResponse(const std::vector<uint8_t>& frame_data = {});

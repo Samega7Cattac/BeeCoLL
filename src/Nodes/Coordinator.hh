@@ -2,14 +2,14 @@
 #define BEECOLL_NODE_COORDINATOR_HH
 
 #ifdef _WIN32
-    #ifdef DBRIDGEEXT_XBEE_BUILD
-        #define DBRIDGEEXT_XBEE_API __declspec(dllexport)
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
     #else
-        #define DBRIDGEEXT_XBEE_API __declspec(dllimport)
+        #define BEECOLL_API __declspec(dllimport)
     #endif
 #elif __unix__
-    #ifndef DBRIDGEEXT_XBEE_API
-        #define DBRIDGEEXT_XBEE_API
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
     #endif
 #endif
 
@@ -57,7 +57,7 @@ namespace BeeCoLL
     //! 
     //! Contain function which can onlu 
     //!
-    class DBRIDGEEXT_XBEE_API Coordinator : public Node, public SerialInterface
+    class BEECOLL_API Coordinator : public Node, public SerialInterface
     {
     public:
 

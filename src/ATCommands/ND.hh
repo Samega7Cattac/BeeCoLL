@@ -1,15 +1,27 @@
 #ifndef BEECOLL_ATCOMMANDS_ND_HH
 #define BEECOLL_ATCOMMANDS_ND_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 #include "ATCommand.hh"
 
 constexpr uint16_t ND_ATCOMMAND_CODE = 0x4e44;
 
 namespace BeeCoLL
 {
-namespace ATCommands
+namespace  ATCommands
 {
-    class ND : public ATCommand
+    class BEECOLL_API ND : public ATCommand
     {
     public:
         ND();

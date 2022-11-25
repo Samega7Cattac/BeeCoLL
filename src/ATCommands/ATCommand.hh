@@ -1,6 +1,18 @@
 #ifndef BEECOLL_ATCOMMANDS_HH
 #define BEECOLL_ATCOMMANDS_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // STD headers
 #include <cstdint>
 #include <string>
@@ -8,7 +20,7 @@
 
 namespace BeeCoLL
 {
-    class ATCommand
+    class BEECOLL_API ATCommand
     {
     public:
         explicit ATCommand(uint16_t at_command);
