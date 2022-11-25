@@ -30,3 +30,20 @@ target_link_libraries(${TEST_EXECUTABLE_TARGET_NAME}
 target_include_directories(${TEST_EXECUTABLE_TARGET_NAME}
     PRIVATE
         ./src/)
+
+install(
+    TARGETS ${LIBRARY_TARGET_NAME}
+    EXPORT "${LIBRARY_TARGET_NAME}Config"
+    DESTINATION lib
+    INCLUDES DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+
+install(EXPORT "${LIBRARY_TARGET_NAME}Config"
+        FILE "${LIBRARY_TARGET_NAME}Config.cmake"
+        NAMESPACE beecoll::
+        DESTINATION cmake)
+
+install(
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
+    DESTINATION include/beecoll
+    FILES_MATCHING
+    PATTERN "*.hh")
