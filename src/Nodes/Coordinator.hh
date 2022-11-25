@@ -63,6 +63,8 @@ namespace BeeCoLL
 
         explicit Coordinator(const std::string& serial_device_path);
 
+        Coordinator(const Coordinator& other);
+
         ~Coordinator();
 
         void SendAPICommand(const Frame& frame,

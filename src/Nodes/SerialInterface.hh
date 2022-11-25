@@ -68,6 +68,10 @@ namespace BeeCoLL
         void SetOutputBaudRate(unsigned int baudrate);
 
         void SetHandOnLastCall(bool enable);
+
+    protected:
+        explicit SerialInterface(int serial_fd);
+        
     private:
         int m_serial_fd;
     };

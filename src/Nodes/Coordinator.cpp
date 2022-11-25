@@ -9,6 +9,8 @@
 #include "../ATCommands/SL.hh"
 #include "../ATCommands/SH.hh"
 
+#include "Node.hh"
+
 // STD headers
 #include <cstring>
 
@@ -61,6 +63,12 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
     ask_sh.SetATCommand(at_sh);
 
     SendAPICommand(ask_sh, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+}
+
+BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
+    SerialInterface(other.GetSerialFD())
+{
+
 }
 
 BeeCoLL::Coordinator::~Coordinator()

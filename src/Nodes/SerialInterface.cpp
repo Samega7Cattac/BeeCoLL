@@ -24,6 +24,12 @@ BeeCoLL::SerialInterface::SerialInterface(const std::string &serial_device)
     // ClearSerial();
 }
 
+BeeCoLL::SerialInterface::SerialInterface(int serial_fd) :
+    m_serial_fd(serial_fd)
+{
+
+}
+
 BeeCoLL::SerialInterface::~SerialInterface()
 {
     if (m_serial_fd >= 0)
