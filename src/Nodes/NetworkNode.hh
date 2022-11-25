@@ -1,6 +1,18 @@
 #ifndef BEECOLL_NODE_NETWORKNODE_HH
 #define BEECOLL_NODE_NETWORKNODE_HH
 
+#ifdef _WIN32
+    #ifdef BEECOLL_BUILD
+        #define BEECOLL_API __declspec(dllexport)
+    #else
+        #define BEECOLL_API __declspec(dllimport)
+    #endif
+#elif __unix__
+    #ifndef BEECOLL_API
+        #define BEECOLL_API
+    #endif
+#endif
+
 // BEECOLL headers
 #include "Node.hh"
 #include "Coordinator.hh"
@@ -29,7 +41,7 @@ namespace BeeCoLL
         uint32_t rssi_of_last_hop;
     };
 
-    class NetworkNode : public Node
+    class BEECOLL_API NetworkNode : public Node
     {
     public:
         NetworkNode(const NetworkNodeInfo& node_info,
