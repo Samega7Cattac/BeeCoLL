@@ -1,7 +1,7 @@
 message(STATUS "Configurating BeeCoLL")
 
 target_include_directories(${LIBRARY_TARGET_NAME}
-    PRIVATE
+    PUBLIC
         .)
 
 add_subdirectory(Frames)
