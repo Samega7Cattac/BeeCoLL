@@ -24,21 +24,16 @@ static const uint8_t INPUT_FRAME_DELIMITER = 0x25;
 
 namespace BeeCoLL
 {
+    // TODO: Distribute the rest of the IDs to the corresponding frames headers
     enum FrameType : uint8_t
     {
-        AT_COMMAND = 0x08,
         AT_COMMAND_QUEUE_PARAMETER_VALUE = 0x09,
-        TRANSMIT_REQUEST = 0x10,
         EXPLICIT_ADDRESSING_COMMAND_FRAME = 0x11,
         REMOTE_AT_COMMAND_REQUEST = 0x17,
         CREATE_SOURCE_ROUTE = 0x21,
         REGISTER_JOINING_DEVICE = 0x24,
 
-        AT_COMMAND_RESPONSE = 0x88,
         MODEM_STATUS = 0x8A,
-        TRANSMIT_STATUS = 0x8B,
-        RECEIVE_PACKET = 0x90,
-        EXPLICIT_RX_INDICATOR = 0x91,
         IO_DATA_SAMPLE_RX_INDICATOR = 0x92,
         XBEE_SENSOR_READ_INDICATOR = 0x94,
         NODE_IDENTIFICATION_INDICATOR = 0x95,
@@ -53,7 +48,7 @@ namespace BeeCoLL
     class BEECOLL_API Frame
     {
     public:
-        Frame(FrameType type, const std::vector<uint8_t>& data);
+        Frame(uint8_t frame_type, const std::vector<uint8_t>& data);
 
         explicit Frame(const std::vector<uint8_t>& frame);
 
@@ -61,13 +56,15 @@ namespace BeeCoLL
         
         virtual ~Frame();
 
-        FrameType GetType() const;
+        uint8_t GetFrameType() const;
 
         std::vector<uint8_t> GetFrame() const;
 
         uint8_t GetID() const;
 
         std::vector<uint8_t> GetResponseTypes() const;
+
+        uint8_t GetStatusResponseFrameType() const;
 
     protected:
         std::vector<uint8_t> GetData();
@@ -84,7 +81,7 @@ namespace BeeCoLL
 
         void InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>& data);
 
-        void SetType(FrameType type);
+        void SetFrameType(uint8_t type);
 
         bool CompareChecksum(uint8_t other_checksum);
 
@@ -92,16 +89,20 @@ namespace BeeCoLL
 
         void SetResponseTypes(const std::vector<uint8_t>& response_types);
 
+        void SetStatusResponseFrameType(uint8_t respond_frame);
+
     private:
+        uint8_t m_type;
+
         std::vector<uint8_t> m_response_types;
+
+        uint8_t m_status_response_type;
 
         uint8_t m_id;
 
         uint8_t m_length_msb;
 
         uint8_t m_length_lsb;
-
-        FrameType m_type;
 
         std::vector<uint8_t> m_data;
 

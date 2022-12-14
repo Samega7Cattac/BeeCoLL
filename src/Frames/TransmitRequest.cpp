@@ -1,4 +1,6 @@
 #include "TransmitRequest.hh"
+#include "RecievePacket.hh"
+#include "ExtendedTransmitStatus.hh"
 
 // STD headers
 #include <numeric>
@@ -21,7 +23,7 @@ constexpr uint8_t TRANSMIT_OPTIONS_OFFSET = 12;
 static uint8_t frame_id = 1;
 
 BeeCoLL::Frames::TransmitRequest::TransmitRequest(const std::vector<uint8_t>& frame_data) : 
-    Frame(FrameType::TRANSMIT_REQUEST, frame_data)
+    Frame(TRANSMIT_REQUEST_FRAME_ID, frame_data)
 {
     SetFrameID(frame_id++);
     SetDestNetworkAddr(0x000000000000FFFF);
@@ -30,7 +32,8 @@ BeeCoLL::Frames::TransmitRequest::TransmitRequest(const std::vector<uint8_t>& fr
     default_option.emplace_back(TransmitOptions::DEFAULT_USE_TO);
     SetTransmitOptions(default_option);
     SetBroadCastRadius(0);
-    SetResponseTypes({FrameType::EXPLICIT_RX_INDICATOR, FrameType::RECEIVE_PACKET});
+    SetResponseTypes({EXPLICIT_RX_INDICATOR_FRAME_ID, RECEIVE_PACKET_FRAME_ID});
+    SetStatusResponseFrameType(TRANSMIT_STATUS_FRAME_ID);
 }
 
 BeeCoLL::Frames::TransmitRequest::TransmitRequest(const Frame& other) : 
@@ -55,6 +58,14 @@ BeeCoLL::Frames::TransmitRequest::SetFrameID(uint8_t frame_id)
 {
     SetID(frame_id);
     SetDataByte(FRAME_ID_OFFSET, frame_id);
+    if (frame_id == 0)
+    {
+        SetStatusResponseFrameType(0);
+    }
+    else
+    {
+        SetStatusResponseFrameType(TRANSMIT_STATUS_FRAME_ID);
+    }
 }
 
 uint64_t

@@ -16,7 +16,7 @@
 // BeeCoLL headers
 #include "../Frames/Frame.hh"
 #include "Node.hh"
-#include "SerialInterface.hh"
+#include "Serial.hh"
 #include "NetworkNode.hh"
 #include "../ATCommands/ND.hh"
 
@@ -57,7 +57,7 @@ namespace BeeCoLL
     //! 
     //! Contain function which can onlu 
     //!
-    class BEECOLL_API Coordinator : public Node, public SerialInterface
+    class BEECOLL_API Coordinator : public Node, public Serial
     {
     public:
 
@@ -72,9 +72,10 @@ namespace BeeCoLL
 
         std::vector<std::shared_ptr<class NetworkNode>> GetNetworkNodes();
 
-        // Frame ReceiveAPICommand();
+        void StartDiscover(bool async = false);
 
-        void StartDiscover();
+        void SendMessageToNode(uint64_t dest_uniq_addr,
+                               const std::vector<uint8_t>& msg);
     
     private:
         int m_fd_write;
@@ -96,6 +97,9 @@ namespace BeeCoLL
         void RegisterCallback(uint8_t frame_id,
                               uint8_t frame_response_type,
                               std::function<void(const Frame&)> callback_function);
+        
+        void RemoveCallback(uint8_t frame_id,
+                            uint8_t frame_response_type);
 
         void InterfaceHandler();
 

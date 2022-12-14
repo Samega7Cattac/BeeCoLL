@@ -24,6 +24,8 @@ namespace BeeCoLL
 {
 namespace Frames
 {
+    constexpr uint8_t EXPLICIT_RX_INDICATOR_FRAME_ID = 0x91;
+
     enum ReceiveOptions : unsigned char
     {
         PACKAGE_ACK = 0x01,

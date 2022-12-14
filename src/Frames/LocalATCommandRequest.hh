@@ -25,6 +25,8 @@ namespace BeeCoLL
 {
 namespace Frames
 {
+    constexpr uint8_t LOCAL_ATCOMMAND_REQUEST_FRAME_ID = 0x08;
+    
     class BEECOLL_API LocalATCommandRequest : public Frame
     {
     public:

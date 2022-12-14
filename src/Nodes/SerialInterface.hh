@@ -26,6 +26,7 @@ namespace BeeCoLL
         virtual ~SerialInterface();
 
     protected:
+        explicit SerialInterface(int serial_fd);
         explicit SerialInterface(const std::string& serial_device);
 
         int GetSerialFD() const;
@@ -69,8 +70,7 @@ namespace BeeCoLL
 
         void SetHandOnLastCall(bool enable);
 
-    protected:
-        explicit SerialInterface(int serial_fd);
+        void SetImplementationInputProcessing(bool enable);
         
     private:
         int m_serial_fd;

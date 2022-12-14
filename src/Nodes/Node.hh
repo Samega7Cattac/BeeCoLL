@@ -112,7 +112,7 @@ namespace BEECOLL_API BeeCoLL
         //!
         //! @return 64-bit unique address of the node.
         //!
-        uint64_t GetUniqueAddress();
+        uint64_t GetUniqueAddress() const;
 
         //! @brief Get Network Address.
         //!
@@ -121,7 +121,7 @@ namespace BEECOLL_API BeeCoLL
         //!
         //! @return 16-bit network address of the node.
         //!
-        uint16_t GetNetworkAddress();
+        uint16_t GetNetworkAddress() const;
 
         //! @brief Get Node Identifier.
         //!
@@ -129,7 +129,7 @@ namespace BEECOLL_API BeeCoLL
         //!
         //! @return Human readable string node identifier.
         //!
-        std::string GetNodeIdentifier();
+        std::string GetNodeIdentifier() const;
 
         //! @brief Get PAN ID.
         //!
@@ -137,7 +137,7 @@ namespace BEECOLL_API BeeCoLL
         //!
         //! @return 16-bit id of the PAN.
         //!
-        uint16_t GetPANIdentifier();
+        uint16_t GetPANIdentifier() const;
 
     protected:
         void SetUniqueAddress(uint64_t new_addr);

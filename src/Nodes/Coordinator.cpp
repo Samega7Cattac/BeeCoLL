@@ -4,6 +4,8 @@
 #include "../Frames/LocalATCommandRequest.hh"
 #include "../Frames/LocalATCommandResponse.hh"
 #include "../Frames/ExplicitRxIndicator.hh"
+#include "../Frames/RecievePacket.hh"
+#include "../Frames/TransmitRequest.hh"
 
 #include "../ATCommands/NT.hh"
 #include "../ATCommands/SL.hh"
@@ -13,6 +15,7 @@
 
 // STD headers
 #include <cstring>
+#include <chrono>
 
 // Linux headers
 #include <fcntl.h>
@@ -23,26 +26,25 @@
 #include <iostream>
 
 BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
-    SerialInterface(serial_device_path)
+    Serial(serial_device_path)
 {
-    // SetTimeoutSinceRead(30);
-    SetSignalChars(false);
-    SetBitsInByte(8);
-    SetStopBits(false);
-    SetInputBaudRate(B9600);
-    SetOutputBaudRate(B9600);
-    // SetControlFlow(true);
-    SetSoftwareFlowControl(false);
-    SetParityBit(false);
-    // SetModemLine(false);
-    SetOutputSpecialChars(false);
-    SetInputSpecialChars(false);
+    // LockFD(GetSerialFD());
+    // SetTimeoutSinceRead(0);
+    // SetSignalChars(false);
+    // SetBitsInByte(8);
+    // SetStopBits(false);
+    // SetInputBaudRate(B9600);
+    // SetOutputBaudRate(B9600);
+    // SetControlFlow(false);
+    // SetSoftwareFlowControl(false);
+    // SetParityBit(false);
+    // SetModemLine(true);
+    // SetOutputSpecialChars(false);
+    // SetInputSpecialChars(false);
     // SetCanonicalMode(false);
-    SetCanonicalMode(false);
-    SetEcho(false);
-    SetInputSpecialChars(false);
-    SetHandOnLastCall(false);
-    LockFD(GetSerialFD());
+    // SetEcho(false);
+    // SetHandOnLastCall(false);
+    // SetImplementationInputProcessing(false);
 
     m_fd_write = eventfd(0, 0);
     m_fd_write_wait = eventfd(1, 0);
@@ -66,16 +68,17 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
 }
 
 BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
-    SerialInterface(other.GetSerialFD())
+    Serial(other.GetSerialFD())
 {
 
 }
 
 BeeCoLL::Coordinator::~Coordinator()
 {
-    close(m_fd_write);
     uint64_t terminus_value = 1;
     write(m_fd_terminus, &terminus_value, sizeof(terminus_value));
+    m_serial_thread.join();
+    close(m_fd_write);
     close(m_fd_terminus);
 }
 
@@ -86,13 +89,34 @@ BeeCoLL::Coordinator::SendAPICommand(const Frame& frame,
     uint64_t value;
     read(m_fd_write_wait, &value, sizeof(uint64_t));
     m_ipc_msg = frame.GetFrame();
-    for (uint8_t repsonse_type : frame.GetResponseTypes())
+    uint8_t status_response_frame_type = frame.GetStatusResponseFrameType();
+    if (status_response_frame_type != 0)
     {
-        RegisterCallback(frame.GetID(), repsonse_type, callback_function);
+        RegisterCallback(frame.GetID(), status_response_frame_type, [=, this](const Frame& response_frame){
+            Frames::ExtendedTransmitStatus status_frame(response_frame);
+            if (status_frame.GetDeliveryStatus() != Frames::DeliveryStatus::SUCCESS)
+            {
+                // TODO: throw something
+                std::cout << "Error sending data to node" << std::endl;
+            }
+            for (uint8_t repsonse_type : frame.GetResponseTypes())
+            {
+                RegisterCallback(status_frame.GetFrameID(), repsonse_type, callback_function);
+            }
+            RemoveCallback(frame.GetID(), status_response_frame_type);
+        });
+    }
+    else
+    {
+        for (uint8_t repsonse_type : frame.GetResponseTypes())
+        {
+            RegisterCallback(frame.GetID(), repsonse_type, callback_function);
+        }
     }
     uint64_t event_value = 1;
     write(m_fd_write, &event_value, sizeof(event_value));
 }
+
 std::vector<std::shared_ptr<BeeCoLL::NetworkNode>>
 BeeCoLL::Coordinator::GetNetworkNodes()
 {
@@ -100,13 +124,23 @@ BeeCoLL::Coordinator::GetNetworkNodes()
 }
 
 void
-BeeCoLL::Coordinator::StartDiscover()
+BeeCoLL::Coordinator::StartDiscover(bool async)
 {
+    if (async == true)
+    {
+        Frames::LocalATCommandRequest at_nd_frame;
+        BeeCoLL::ATCommands::ND at_nd;
+        at_nd_frame.SetATCommand(at_nd);
+
+        SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+        return;
+    }
+    int sync_eventfd = eventfd(0, 0);
     Frames::LocalATCommandRequest at_nt_frame;
     BeeCoLL::ATCommands::NT at_nt;
     at_nt_frame.SetATCommand(at_nt);
 
-    SendAPICommand(at_nt_frame, [](const Frame& frame){
+    SendAPICommand(at_nt_frame, [=, this](const Frame& frame){
         Frames::LocalATCommandResponse at_reply_frame(frame);
 
         if (at_reply_frame.GetStatus() != Frames::CommandStatus::OK)
@@ -114,14 +148,35 @@ BeeCoLL::Coordinator::StartDiscover()
             std::cout << "CANT " << std::endl;
             // TODO: throw something
         }
+
+
+        Frames::LocalATCommandRequest at_nd_frame;
+        BeeCoLL::ATCommands::ND at_nd;
+        at_nd_frame.SetATCommand(at_nd);
+
+        SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+
+        ATCommands::NT reply_nt(at_reply_frame.GetATCommand());
+        uint64_t timeout = reply_nt.GetTimeout() * 100;
+
+        write(sync_eventfd, &timeout, sizeof(timeout));
+        this->RemoveCallback(frame.GetID(), frame.GetFrameType());
     });
+    uint64_t sync_value;
+    read(sync_eventfd, &sync_value, sizeof(sync_value));
+    std::this_thread::sleep_for(std::chrono::milliseconds(sync_value));
+    close(sync_eventfd);
+}
 
-    Frames::LocalATCommandRequest at_nd_frame;
-    BeeCoLL::ATCommands::ND at_nd;
-    at_nd_frame.SetATCommand(at_nd);
+void
+BeeCoLL::Coordinator::SendMessageToNode(uint64_t dest_uniq_addr,
+                                        const std::vector<uint8_t>& msg)
+{
+    Frames::TransmitRequest frame;
+    frame.SetDestUniqueAddr(dest_uniq_addr);
+    frame.SetPayload(msg);
 
-    SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
-    sleep(3);
+    SendAPICommand(frame, nullptr);
 }
 
 void
@@ -130,6 +185,20 @@ BeeCoLL::Coordinator::RegisterCallback(uint8_t frame_id,
                               std::function<void(const Frame&)> callback_function)
 {
     m_callbacks.emplace_back(frame_id, frame_response_type, callback_function);
+}
+
+void
+BeeCoLL::Coordinator::RemoveCallback(uint8_t frame_id,
+                              uint8_t frame_response_type)
+{
+    for (unsigned int callback_index = 0; callback_index < m_callbacks.size(); ++callback_index)
+    {
+        if (m_callbacks[callback_index].frame_id == frame_id &&
+            m_callbacks[callback_index].frame_response_type == frame_response_type)
+        {
+            m_callbacks.erase(m_callbacks.begin() + callback_index);
+        }
+    }
 }
 
 void
@@ -144,6 +213,10 @@ BeeCoLL::Coordinator::InterfaceHandler()
     {
         max_fd = m_fd_write;
     }
+    if (m_fd_terminus > max_fd)
+    {
+        max_fd = m_fd_terminus;
+    }
 
     fd_set read_fds;
     while(m_run_serial_handler == true)
@@ -156,7 +229,7 @@ BeeCoLL::Coordinator::InterfaceHandler()
         if (available == -1)
         {
             // TODO: should throw on warning?
-            std::cout << "select failed" << std::endl;
+            std::cout << "select failed " << std::strerror(errno) << std::endl;
             continue;
         }
         else if (FD_ISSET(GetSerialFD(), &read_fds))
@@ -189,8 +262,8 @@ BeeCoLL::Coordinator::InterfaceHandler()
         }
         else if (FD_ISSET(m_fd_write, &read_fds))
         {
-            uint64_t event_value;
-            read(m_fd_write, &event_value, sizeof(event_value));
+            uint64_t sync_value;
+            read(m_fd_write, &sync_value, sizeof(sync_value));
 
             WriteToSerial(m_ipc_msg);
             uint64_t value = 1;
@@ -206,9 +279,23 @@ BeeCoLL::Coordinator::InterfaceHandler()
 void
 BeeCoLL::Coordinator::Parser(const Frame& frame)
 {
-    if (frame.GetType() == FrameType::EXPLICIT_RX_INDICATOR)
+    if (frame.GetFrameType() == Frames::EXPLICIT_RX_INDICATOR_FRAME_ID)
     {
         Frames::ExplicitRxIndicator recv_reply(frame);
+        uint64_t node_addr = recv_reply.GetSourceUniqueAddr();
+        for (std::shared_ptr<NetworkNode> node : m_network_nodes)
+        {
+            uint64_t node_uaddr = node->GetUniqueAddress();
+            if (node->GetUniqueAddress() == node_addr)
+            {
+                node->TriggerCallback(frame);
+                return;
+            }
+        }
+    }
+    else if (frame.GetFrameType() == Frames::RECEIVE_PACKET_FRAME_ID)
+    {
+        Frames::RecievePacket recv_reply(frame);
         uint64_t node_addr = recv_reply.GetSourceUniqueAddr();
         for (std::shared_ptr<NetworkNode> node : m_network_nodes)
         {
@@ -224,7 +311,7 @@ BeeCoLL::Coordinator::Parser(const Frame& frame)
     for (CallbackRegister& callback : m_callbacks)
     {
         if (callback.frame_id == frame_id &&
-            callback.frame_response_type == frame.GetType())
+            callback.frame_response_type == frame.GetFrameType())
         {
             callback.callback_function(frame);
             return;
@@ -235,7 +322,7 @@ BeeCoLL::Coordinator::Parser(const Frame& frame)
 void
 BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
 {
-    if (frame.GetType() == FrameType::AT_COMMAND_RESPONSE)
+    if (frame.GetFrameType() == Frames::LOCAL_ATCOMMAND_RESPONSE_FRAME_ID)
     {
         Frames::LocalATCommandResponse at_reply(frame);
         ATCommand at_cmd = at_reply.GetATCommand();
@@ -259,6 +346,7 @@ BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
             unique_addr |= static_cast<uint32_t>(sl_value[1]) << 16;
             unique_addr |= static_cast<uint32_t>(sl_value[0]) << 24;
             SetUniqueAddress(unique_addr);
+            RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
         }
         else if (at_cmd.GetATCommand() == SH_ATCOMMAND_CODE)
         {
@@ -275,6 +363,7 @@ BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
             unique_addr |= static_cast<uint64_t>(sh_value[1]) << 48;
             unique_addr |= static_cast<uint64_t>(sh_value[0]) << 56;
             SetUniqueAddress(unique_addr);
+            RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
         }
     }
 }

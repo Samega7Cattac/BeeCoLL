@@ -6,7 +6,7 @@ constexpr uint8_t ATCOMMAND_OFFSET2 = 2;
 constexpr uint8_t COMMAND_STATUS_OFFSET = 3;
 
 BeeCoLL::Frames::LocalATCommandResponse::LocalATCommandResponse(const std::vector<uint8_t>& frame_data) : 
-    Frame(FrameType::AT_COMMAND_RESPONSE, frame_data),
+    Frame(LOCAL_ATCOMMAND_RESPONSE_FRAME_ID, frame_data),
     m_at_command(0)
 {
     SetID(GetFrameID());

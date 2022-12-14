@@ -14,7 +14,7 @@
 
 BeeCoLL::SerialInterface::SerialInterface(const std::string &serial_device)
 {
-    m_serial_fd = open(serial_device.c_str(), O_RDWR);
+    m_serial_fd = open(serial_device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (m_serial_fd < 0)
     {
         // TODO: throw something
@@ -125,13 +125,17 @@ BeeCoLL::SerialInterface::SetParityBit(bool enable)
         // TODO: throw something
         std::cout << std::strerror(errno) << std::endl;
     }
+    tty_attr.c_cflag = INPCK;
+    tty_attr.c_cflag = ISTRIP;
     if (enable == true)
     {
         tty_attr.c_cflag |= PARENB;
+        tty_attr.c_cflag |= PARODD;
     }
     else
     {
         tty_attr.c_cflag &= ~PARENB;
+        tty_attr.c_cflag &= ~PARODD;
     }
     if (tcsetattr(m_serial_fd, TCSANOW, &tty_attr) != 0)
     {
@@ -292,12 +296,14 @@ BeeCoLL::SerialInterface::SetEcho(bool enable)
     {
         tty_attr.c_lflag |= ECHO;
         tty_attr.c_lflag |= ECHOE;
+        tty_attr.c_lflag |= ECHOK;
         tty_attr.c_lflag |= ECHONL;
     }
     else
     {
         tty_attr.c_lflag &= ~ECHO;
         tty_attr.c_lflag &= ~ECHOE;
+        tty_attr.c_lflag &= ~ECHOK;
         tty_attr.c_lflag &= ~ECHONL;
     }
     if (tcsetattr(m_serial_fd, TCSANOW, &tty_attr) != 0)
@@ -344,13 +350,17 @@ BeeCoLL::SerialInterface::SetSoftwareFlowControl(bool enable)
     {
         tty_attr.c_lflag |= IXON;
         tty_attr.c_lflag |= IXOFF;
+#ifdef IXANY
         tty_attr.c_lflag |= IXANY;
+#endif
     }
     else
     {
         tty_attr.c_lflag &= ~IXON;
         tty_attr.c_lflag &= ~IXOFF;
+#ifdef IXANY
         tty_attr.c_lflag &= ~IXANY;
+#endif
     }
     if (tcsetattr(m_serial_fd, TCSANOW, &tty_attr) != 0)
     {
@@ -509,6 +519,30 @@ BeeCoLL::SerialInterface::SetHandOnLastCall(bool enable)
     else
     {
         tty_attr.c_lflag &= ~HUPCL;
+    }
+    if (tcsetattr(m_serial_fd, TCSANOW, &tty_attr) != 0)
+    {
+        // TODO: throw something
+        std::cout << std::strerror(errno) << std::endl;
+    }
+}
+
+void
+BeeCoLL::SerialInterface::SetImplementationInputProcessing(bool enable)
+{
+    struct termios tty_attr;
+    if (tcgetattr(m_serial_fd, &tty_attr) != 0)
+    {
+        // TODO: throw something
+        std::cout << std::strerror(errno) << std::endl;
+    }
+    if (enable == true)
+    {
+        tty_attr.c_lflag |= IEXTEN;
+    }
+    else
+    {
+        tty_attr.c_lflag &= ~IEXTEN;
     }
     if (tcsetattr(m_serial_fd, TCSANOW, &tty_attr) != 0)
     {

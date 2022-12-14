@@ -11,7 +11,7 @@ BeeCoLL::Node::~Node()
 }
 
 uint64_t
-BeeCoLL::Node::GetUniqueAddress()
+BeeCoLL::Node::GetUniqueAddress() const
 {
     uint64_t address;
     // Puts the least significant number in the least significant part of the address.
@@ -23,19 +23,19 @@ BeeCoLL::Node::GetUniqueAddress()
 }
 
 uint16_t
-BeeCoLL::Node::GetNetworkAddress()
+BeeCoLL::Node::GetNetworkAddress() const
 {
     return m_MY;
 }
 
 std::string
-BeeCoLL::Node::GetNodeIdentifier()
+BeeCoLL::Node::GetNodeIdentifier() const
 {
     return m_NI;
 }
 
 uint16_t
-BeeCoLL::Node::GetPANIdentifier()
+BeeCoLL::Node::GetPANIdentifier() const
 {
     // Check if the ID is in auto (set to 0).
     if (m_ID == 0)

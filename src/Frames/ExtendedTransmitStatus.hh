@@ -19,6 +19,8 @@ namespace BeeCoLL
 {
 namespace Frames
 {
+    constexpr uint8_t TRANSMIT_STATUS_FRAME_ID = 0x8B;
+
     enum DeliveryStatus : uint8_t
     {
         SUCCESS = 0x00,
@@ -61,7 +63,6 @@ namespace Frames
         ~ExtendedTransmitStatus();
 
         uint8_t GetFrameID();
-        void SetFrameID(uint8_t frame_id);
         uint16_t GetDestNetworkAddr();
         uint8_t GetRetryCount();
         DeliveryStatus GetDeliveryStatus();

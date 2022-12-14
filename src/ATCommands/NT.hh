@@ -27,6 +27,8 @@ namespace ATCommands
         NT();
         NT(const ATCommand& other);
         ~NT();
+
+        uint8_t GetTimeout();
     };
 };
 };

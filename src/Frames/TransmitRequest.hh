@@ -21,6 +21,8 @@ namespace BeeCoLL
 {
 namespace Frames
 {
+    constexpr uint8_t TRANSMIT_REQUEST_FRAME_ID = 0x10;
+
     enum TransmitOptions : uint8_t
     {
         DEFAULT_USE_TO = 0x00,

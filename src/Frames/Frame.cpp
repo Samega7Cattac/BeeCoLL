@@ -5,7 +5,8 @@
 #include <algorithm>
 #include <numeric>
 
-BeeCoLL::Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
+BeeCoLL::Frame::Frame(uint8_t type, const std::vector<uint8_t>& data) :
+    m_status_response_type(0),
     m_id(0),
     m_type(type),
     m_data(data)
@@ -16,7 +17,9 @@ BeeCoLL::Frame::Frame(FrameType type, const std::vector<uint8_t>& data) :
 
 #include <iostream>
 
-BeeCoLL::Frame::Frame(const std::vector<uint8_t>& frame)
+BeeCoLL::Frame::Frame(const std::vector<uint8_t>& frame) :
+    m_response_types({}),
+    m_status_response_type(0)
 {
     if (frame[0] != START_DELIMITER)
     {
@@ -29,7 +32,7 @@ BeeCoLL::Frame::Frame(const std::vector<uint8_t>& frame)
     unsigned int data_size = m_length_lsb;
     data_size |= m_length_msb << 8;
 
-    m_type = static_cast<FrameType>(frame[3]);
+    m_type = frame[3];
 
     for (unsigned int byte = 4; byte < 3 + data_size; ++byte)
     {
@@ -39,12 +42,14 @@ BeeCoLL::Frame::Frame(const std::vector<uint8_t>& frame)
     RecalculateChecksum();
     if (CompareChecksum(frame[3 + data_size]) == false)
     {
+        // TODO: throw something
         std::cout << "check frame failed" << std::endl;
     }
 }
 
 BeeCoLL::Frame::Frame(const Frame& other_frame) :
     m_response_types(other_frame.m_response_types),
+    m_status_response_type(other_frame.m_status_response_type),
     m_id(other_frame.m_id),
     m_length_msb(other_frame.m_length_msb),
     m_length_lsb(other_frame.m_length_lsb),
@@ -161,14 +166,14 @@ BeeCoLL::Frame::InsertDataAT(unsigned int byte_index, const std::vector<uint8_t>
     RecalculateChecksum();
 }
 
-BeeCoLL::FrameType
-BeeCoLL::Frame::GetType() const
+uint8_t
+BeeCoLL::Frame::GetFrameType() const
 {
     return m_type;
 }
 
 void
-BeeCoLL::Frame::SetType(FrameType type)
+BeeCoLL::Frame::SetFrameType(uint8_t type)
 {
     if (type > INPUT_FRAME_DELIMITER)
     {
@@ -213,6 +218,12 @@ BeeCoLL::Frame::GetResponseTypes() const
     return m_response_types;
 }
 
+uint8_t
+BeeCoLL::Frame::GetStatusResponseFrameType() const
+{
+    return m_status_response_type;
+}
+
 void
 BeeCoLL::Frame::SetID(uint8_t id)
 {
@@ -223,6 +234,12 @@ void
 BeeCoLL::Frame::SetResponseTypes(const std::vector<uint8_t>& response_types)
 {
     m_response_types = response_types;
+}
+
+void
+BeeCoLL::Frame::SetStatusResponseFrameType(uint8_t frame_type)
+{
+    m_status_response_type = frame_type;
 }
 
 void

@@ -26,7 +26,7 @@ constexpr unsigned char RECEIVE_OPTIONS_OFFSET = 16;
 constexpr uint8_t RECEIVED_DATA_OFFSET = 17;
 
 BeeCoLL::Frames::ExplicitRxIndicator::ExplicitRxIndicator(const std::vector<uint8_t>& frame_data) : 
-    Frame(FrameType::EXPLICIT_RX_INDICATOR, frame_data)
+    Frame(EXPLICIT_RX_INDICATOR_FRAME_ID, frame_data)
 {
 
 }

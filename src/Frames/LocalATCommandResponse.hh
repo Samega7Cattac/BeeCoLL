@@ -25,6 +25,8 @@ namespace BeeCoLL
 {
 namespace Frames
 {
+    constexpr uint8_t LOCAL_ATCOMMAND_RESPONSE_FRAME_ID = 0x88;
+
     enum CommandStatus : uint8_t
     {
         OK = 0,
