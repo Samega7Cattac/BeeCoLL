@@ -65,8 +65,8 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
         Frames::LocalATCommandResponse at_reply(frame);
         if (at_reply.GetStatus() == Frames::CommandStatus::OK)
         {
-            ATCommands::SL at_sl(at_reply.GetATCommand());
-            std::vector<uint8_t> sl_value = at_sl.GetValue();
+            ATCommands::SL reply_at_sl(at_reply.GetATCommand());
+            std::vector<uint8_t> sl_value = reply_at_sl.GetValue();
             if (sl_value.size() != 4)
             {
                 // TODO: throw something
@@ -100,8 +100,8 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
         Frames::LocalATCommandResponse at_reply(frame);
         if (at_reply.GetStatus() == Frames::CommandStatus::OK)
         {
-            ATCommands::SH at_sl(at_reply.GetATCommand());
-            std::vector<uint8_t> sh_value = at_sh.GetValue();
+            ATCommands::SH reply_at_sh(at_reply.GetATCommand());
+            std::vector<uint8_t> sh_value = reply_at_sh.GetValue();
             if (sh_value.size() != 4)
             {
                 // TODO: throw something
@@ -210,21 +210,21 @@ BeeCoLL::Coordinator::StartDiscover(bool async)
             // TODO: throw something
         }
 
-
-        Frames::LocalATCommandRequest at_nd_frame;
-        BeeCoLL::ATCommands::ND at_nd;
-        at_nd_frame.SetATCommand(at_nd);
-
-        SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
-
         ATCommands::NT reply_nt(at_reply_frame.GetATCommand());
         uint64_t timeout = reply_nt.GetTimeout() * 100;
 
+        RemoveCallback(at_reply_frame.GetFrameID(), at_reply_frame.GetFrameType());
         write(sync_eventfd, &timeout, sizeof(timeout));
-        this->RemoveCallback(frame.GetID(), frame.GetFrameType());
     });
     uint64_t sync_value;
     read(sync_eventfd, &sync_value, sizeof(sync_value));
+
+    Frames::LocalATCommandRequest at_nd_frame;
+    BeeCoLL::ATCommands::ND at_nd;
+    at_nd_frame.SetATCommand(at_nd);
+
+    SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+
     std::this_thread::sleep_for(std::chrono::milliseconds(sync_value));
     close(sync_eventfd);
 }
