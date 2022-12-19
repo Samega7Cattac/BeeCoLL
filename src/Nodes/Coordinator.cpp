@@ -54,17 +54,78 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
     std::thread tmp_thread(&Coordinator::InterfaceHandler, this);
     m_serial_thread = std::move(tmp_thread);
 
+    SetUniqueAddress(0);
+
     Frames::LocalATCommandRequest ask_sl;
     ATCommands::SL at_sl;
     ask_sl.SetATCommand(at_sl);
 
-    SendAPICommand(ask_sl, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+    int sync_eventfd = eventfd(0, 0);
+    SendAPICommand(ask_sl, [=, this](const Frame& frame){
+        Frames::LocalATCommandResponse at_reply(frame);
+        if (at_reply.GetStatus() == Frames::CommandStatus::OK)
+        {
+            ATCommands::SL at_sl(at_reply.GetATCommand());
+            std::vector<uint8_t> sl_value = at_sl.GetValue();
+            if (sl_value.size() != 4)
+            {
+                // TODO: throw something
+                std::cout << "Invalid SL value" << std::endl;
+            }
+            uint64_t unique_addr = GetUniqueAddress();
+            unique_addr |= sl_value[3];
+            unique_addr |= static_cast<uint16_t>(sl_value[2]) << 8;
+            unique_addr |= static_cast<uint32_t>(sl_value[1]) << 16;
+            unique_addr |= static_cast<uint32_t>(sl_value[0]) << 24;
+            SetUniqueAddress(unique_addr);
+        }
+        else
+        {
+            std::cout << "Unable to get SL" << std::endl;
+        }
+        RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
+
+        uint64_t api_sync_value = 1;
+        write(sync_eventfd, &api_sync_value, sizeof(api_sync_value));
+    });
+    uint64_t sync_value;
+    read(sync_eventfd, &sync_value, sizeof(sync_value));
+
 
     Frames::LocalATCommandRequest ask_sh;
     ATCommands::SH at_sh;
     ask_sh.SetATCommand(at_sh);
 
-    SendAPICommand(ask_sh, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
+    SendAPICommand(ask_sh, [=, this](const Frame& frame){
+        Frames::LocalATCommandResponse at_reply(frame);
+        if (at_reply.GetStatus() == Frames::CommandStatus::OK)
+        {
+            ATCommands::SH at_sl(at_reply.GetATCommand());
+            std::vector<uint8_t> sh_value = at_sh.GetValue();
+            if (sh_value.size() != 4)
+            {
+                // TODO: throw something
+                std::cout << "Invalid SH value" << std::endl;
+            }
+            uint64_t unique_addr = GetUniqueAddress();
+            unique_addr |= static_cast<uint64_t>(sh_value[3]) << 32;
+            unique_addr |= static_cast<uint64_t>(sh_value[2]) << 40;
+            unique_addr |= static_cast<uint64_t>(sh_value[1]) << 48;
+            unique_addr |= static_cast<uint64_t>(sh_value[0]) << 56;
+            SetUniqueAddress(unique_addr);
+        }
+        else
+        {
+            std::cout << "Unable to get SH" << std::endl;
+        }
+        RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
+
+        uint64_t api_sync_value = 1;
+        write(sync_eventfd, &api_sync_value, sizeof(api_sync_value));
+    });
+    read(sync_eventfd, &sync_value, sizeof(sync_value));
+    close(sync_eventfd);
+    std::cout << "New coordinator " << std::hex << GetUniqueAddress() << std::dec << std::endl;
 }
 
 BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
@@ -197,8 +258,10 @@ BeeCoLL::Coordinator::RemoveCallback(uint8_t frame_id,
             m_callbacks[callback_index].frame_response_type == frame_response_type)
         {
             m_callbacks.erase(m_callbacks.begin() + callback_index);
+            return;
         }
     }
+    std::cout << "Callback not found " << frame_id << std::endl; 
 }
 
 void
@@ -330,40 +393,6 @@ BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
         {
             ATCommands::ND at_nd(at_cmd);
             AddNode(at_nd);
-        }
-        else if (at_cmd.GetATCommand() == SL_ATCOMMAND_CODE)
-        {
-            ATCommands::SL at_sl(at_cmd);
-            std::vector<uint8_t> sl_value = at_sl.GetValue();
-            if (sl_value.size() != 4)
-            {
-                // TODO: throw something
-                std::cout << "Invalid SL value" << std::endl;
-            }
-            uint64_t unique_addr = GetUniqueAddress();
-            unique_addr |= sl_value[3];
-            unique_addr |= static_cast<uint16_t>(sl_value[2]) << 8;
-            unique_addr |= static_cast<uint32_t>(sl_value[1]) << 16;
-            unique_addr |= static_cast<uint32_t>(sl_value[0]) << 24;
-            SetUniqueAddress(unique_addr);
-            RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
-        }
-        else if (at_cmd.GetATCommand() == SH_ATCOMMAND_CODE)
-        {
-            ATCommands::SH at_sh(at_cmd);
-            std::vector<uint8_t> sh_value = at_sh.GetValue();
-            if (sh_value.size() != 4)
-            {
-                // TODO: throw something
-                std::cout << "Invalid SH value" << std::endl;
-            }
-            uint64_t unique_addr = GetUniqueAddress();
-            unique_addr |= static_cast<uint64_t>(sh_value[3]) << 32;
-            unique_addr |= static_cast<uint64_t>(sh_value[2]) << 40;
-            unique_addr |= static_cast<uint64_t>(sh_value[1]) << 48;
-            unique_addr |= static_cast<uint64_t>(sh_value[0]) << 56;
-            SetUniqueAddress(unique_addr);
-            RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
         }
     }
 }
