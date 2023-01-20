@@ -100,6 +100,9 @@ namespace BEECOLL_API BeeCoLL
         //!
         Node();
 
+        // TODO: comment
+        Node(const Node& other);
+
         //! @brief Class destructor.
         //!
         ~Node();

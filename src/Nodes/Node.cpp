@@ -5,6 +5,18 @@ BeeCoLL::Node::Node()
 
 }
 
+BeeCoLL::Node::Node(const Node& other) :
+    m_SH(other.m_SH),
+    m_SL(other.m_SL),
+    m_MY(other.m_MY),
+    m_NI(other.m_NI),
+    m_ID(other.m_ID),
+    m_OP(other.m_OP),
+    m_node_type(other.m_node_type)
+{
+
+}
+
 BeeCoLL::Node::~Node()
 {
 

@@ -11,7 +11,7 @@ BeeCoLL::Serial::Serial(int serial_fd)
 }
 
 BeeCoLL::Serial::Serial(const std::string& serial_device) :
-    m_serial(serial_device, 9600, serial::Timeout::simpleTimeout(1000))
+    m_serial(serial_device, 9600, serial::Timeout::simpleTimeout(5000))
 {
 
 }

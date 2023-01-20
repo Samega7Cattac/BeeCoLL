@@ -1,5 +1,7 @@
 #include "NetworkNode.hh"
 
+#include <iostream>
+
 BeeCoLL::NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordinator) :
     m_info(node_info),
     m_coordinator(coordinator)
@@ -7,6 +9,7 @@ BeeCoLL::NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator*
     uint64_t unique_addr = node_info.SL;
     unique_addr |= static_cast<uint64_t>(node_info.SH) << 32;
     SetUniqueAddress(unique_addr);
+    SetNodeIdentifier(node_info.NI);
 }
 
 BeeCoLL::NetworkNode::NetworkNode(const NetworkNode& other) :
@@ -16,6 +19,7 @@ BeeCoLL::NetworkNode::NetworkNode(const NetworkNode& other) :
     uint64_t unique_addr = other.m_info.SL;
     unique_addr |= static_cast<uint64_t>(other.m_info.SH) << 32;
     SetUniqueAddress(unique_addr);
+    SetNodeIdentifier(other.GetNodeIdentifier());
 }
 
 BeeCoLL::NetworkNode::~NetworkNode()

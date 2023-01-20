@@ -10,6 +10,7 @@
 #include "../ATCommands/NT.hh"
 #include "../ATCommands/SL.hh"
 #include "../ATCommands/SH.hh"
+#include "../ATCommands/NI.hh"
 
 #include "Node.hh"
 
@@ -124,14 +125,41 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
         write(sync_eventfd, &api_sync_value, sizeof(api_sync_value));
     });
     read(sync_eventfd, &sync_value, sizeof(sync_value));
+
+    Frames::LocalATCommandRequest ask_ni;
+    ATCommands::NI at_ni;
+    ask_ni.SetATCommand(at_ni);
+
+    SendAPICommand(ask_ni, [=, this](const Frame& frame){
+        Frames::LocalATCommandResponse at_reply(frame);
+        if (at_reply.GetStatus() == Frames::CommandStatus::OK)
+        {
+            ATCommands::NI reply_at_ni(at_reply.GetATCommand());
+            SetNodeIdentifier(reply_at_ni.GetNodeIdentifier());
+        }
+        else
+        {
+            std::cout << "Unable to get NI" << std::endl;
+        }
+        RemoveCallback(at_reply.GetFrameID(), at_reply.GetFrameType());
+
+        uint64_t api_sync_value = 1;
+        write(sync_eventfd, &api_sync_value, sizeof(api_sync_value));
+    });
+    read(sync_eventfd, &sync_value, sizeof(sync_value));
     close(sync_eventfd);
-    std::cout << "New coordinator " << std::hex << GetUniqueAddress() << std::dec << std::endl;
 }
 
 BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
     Serial(other.GetSerialFD())
 {
+    m_fd_write = eventfd(0, 0);
+    m_fd_write_wait = eventfd(1, 0);
+    m_fd_terminus = eventfd(0, 0);
 
+    m_run_serial_handler = true;
+    std::thread tmp_thread(&Coordinator::InterfaceHandler, this);
+    m_serial_thread = std::move(tmp_thread);
 }
 
 BeeCoLL::Coordinator::~Coordinator()
@@ -147,7 +175,7 @@ void
 BeeCoLL::Coordinator::SendAPICommand(const Frame& frame,
                             const std::function<void(const Frame&)>& callback_function)
 {
-    uint64_t value;
+    uint64_t value = 0;
     read(m_fd_write_wait, &value, sizeof(uint64_t));
     m_ipc_msg = frame.GetFrame();
     uint8_t status_response_frame_type = frame.GetStatusResponseFrameType();
