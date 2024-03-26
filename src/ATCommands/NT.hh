@@ -17,7 +17,7 @@
 
 constexpr uint16_t NT_ATCOMMAND_CODE = 0x4e54;
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace ATCommands
 {

@@ -2,6 +2,7 @@
 
 // STD headers
 #include <vector>
+#include <cstdint>
 
 // LINUX headers
 #include <fcntl.h>

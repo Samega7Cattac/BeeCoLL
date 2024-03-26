@@ -15,7 +15,7 @@
 
 #include "Frame.hh"
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace Frames
 {

@@ -17,7 +17,7 @@
 
 constexpr uint16_t SH_ATCOMMAND_CODE = 0x5348;
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace BEECOLL_API ATCommands
 {

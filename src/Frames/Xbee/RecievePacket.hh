@@ -21,7 +21,7 @@
 #include <vector>
 #include <string>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace Frames
 {

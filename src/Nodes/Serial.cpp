@@ -16,6 +16,18 @@ BeeCoLL::Serial::Serial(const std::string& serial_device) :
 
 }
 
+BeeCoLL::Serial::Serial(const std::string& serial_device, unsigned int baud_rate) :
+    m_serial(serial_device, baud_rate, serial::Timeout::simpleTimeout(5000))
+{
+
+}
+
+BeeCoLL::Serial::Serial(const std::string& serial_device, unsigned int baud_rate, unsigned int timeout) :
+    m_serial(serial_device, baud_rate, serial::Timeout::simpleTimeout(timeout))
+{
+
+}
+
 void
 BeeCoLL::Serial::WriteToSerial(const std::vector<uint8_t>& data)
 {
@@ -25,8 +37,11 @@ BeeCoLL::Serial::WriteToSerial(const std::vector<uint8_t>& data)
 std::vector<uint8_t>
 BeeCoLL::Serial::ReadFromSerial(std::size_t read_n_bytes)
 {
-    std::string str = m_serial.read(read_n_bytes);
-    return std::vector<uint8_t>(str.begin(), str.end());
+    m_serial.waitReadable();
+    m_serial.waitByteTimes(read_n_bytes);
+    std::vector<uint8_t> data;
+    m_serial.read(data, read_n_bytes);
+    return data;
 }
 
 int

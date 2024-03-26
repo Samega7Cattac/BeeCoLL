@@ -20,7 +20,7 @@
 // STD headers
 #include <functional>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
     struct NetworkNodeInfo
     {

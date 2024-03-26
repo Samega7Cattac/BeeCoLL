@@ -2,7 +2,9 @@
 
 #include <iostream>
 
-BeeCoLL::NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordinator) :
+using namespace BeeCoLL::Xbee;
+
+NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator* coordinator) :
     m_info(node_info),
     m_coordinator(coordinator)
 {
@@ -12,7 +14,7 @@ BeeCoLL::NetworkNode::NetworkNode(const NetworkNodeInfo& node_info, Coordinator*
     SetNodeIdentifier(node_info.NI);
 }
 
-BeeCoLL::NetworkNode::NetworkNode(const NetworkNode& other) :
+NetworkNode::NetworkNode(const NetworkNode& other) :
     m_info(other.m_info),
     m_coordinator(other.m_coordinator)
 {
@@ -22,19 +24,19 @@ BeeCoLL::NetworkNode::NetworkNode(const NetworkNode& other) :
     SetNodeIdentifier(other.GetNodeIdentifier());
 }
 
-BeeCoLL::NetworkNode::~NetworkNode()
+NetworkNode::~NetworkNode()
 {
 
 }
 
 void
-BeeCoLL::NetworkNode::SetCallback(const std::function<void(const Frame&)>& callback)
+NetworkNode::SetCallback(const std::function<void(const Frame&)>& callback)
 {
     m_callback = callback;
 }
 
 void
-BeeCoLL::NetworkNode::TriggerCallback(const Frame& frame)
+NetworkNode::TriggerCallback(const Frame& frame)
 {
     if (m_callback)
     {

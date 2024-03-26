@@ -2,25 +2,25 @@
 
 constexpr uint8_t NI_OFFSET = 1;
 
-BeeCoLL::ATCommands::NI::NI() :
+BeeCoLL::Xbee::ATCommands::NI::NI() :
     ATCommand(NI_ATCOMMAND_CODE)
 {
 
 }
 
-BeeCoLL::ATCommands::NI::NI(const ATCommand& other) :
+BeeCoLL::Xbee::ATCommands::NI::NI(const ATCommand& other) :
     ATCommand(other)
 {
 
 }
 
-BeeCoLL::ATCommands::NI::~NI()
+BeeCoLL::Xbee::ATCommands::NI::~NI()
 {
 
 }
 
 std::string
-BeeCoLL::ATCommands::NI::GetNodeIdentifier()
+BeeCoLL::Xbee::ATCommands::NI::GetNodeIdentifier()
 {
     std::string value;
     uint8_t value_index = NI_OFFSET;

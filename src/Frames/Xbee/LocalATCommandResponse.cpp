@@ -1,11 +1,13 @@
 #include "LocalATCommandResponse.hh"
 
+using namespace BeeCoLL::Xbee;
+
 constexpr uint8_t FRAMEID_OFFSET = 0;
 constexpr uint8_t ATCOMMAND_OFFSET1 = 1;
 constexpr uint8_t ATCOMMAND_OFFSET2 = 2;
 constexpr uint8_t COMMAND_STATUS_OFFSET = 3;
 
-BeeCoLL::Frames::LocalATCommandResponse::LocalATCommandResponse(const std::vector<uint8_t>& frame_data) : 
+Frames::LocalATCommandResponse::LocalATCommandResponse(const std::vector<uint8_t>& frame_data) : 
     Frame(LOCAL_ATCOMMAND_RESPONSE_FRAME_ID, frame_data),
     m_at_command(0)
 {
@@ -13,7 +15,7 @@ BeeCoLL::Frames::LocalATCommandResponse::LocalATCommandResponse(const std::vecto
     GenerateATCommand();
 }
 
-BeeCoLL::Frames::LocalATCommandResponse::LocalATCommandResponse(const Frame& other) : 
+Frames::LocalATCommandResponse::LocalATCommandResponse(const Frame& other) : 
     Frame(other),
     m_at_command(0)
 {
@@ -21,44 +23,44 @@ BeeCoLL::Frames::LocalATCommandResponse::LocalATCommandResponse(const Frame& oth
     GenerateATCommand();
 }
 
-BeeCoLL::Frames::LocalATCommandResponse::~LocalATCommandResponse()
+Frames::LocalATCommandResponse::~LocalATCommandResponse()
 {
     
 }
 
 uint8_t
-BeeCoLL::Frames::LocalATCommandResponse::GetFrameID()
+Frames::LocalATCommandResponse::GetFrameID()
 {
     return GetDataByte(FRAMEID_OFFSET);
 }
 
 void
-BeeCoLL::Frames::LocalATCommandResponse::SetFrameID(uint8_t frame_id)
+Frames::LocalATCommandResponse::SetFrameID(uint8_t frame_id)
 {
     SetID(frame_id);
     SetDataByte(FRAMEID_OFFSET, frame_id);
 }
 
-BeeCoLL::Frames::CommandStatus
-BeeCoLL::Frames::LocalATCommandResponse::GetStatus()
+Frames::CommandStatus
+Frames::LocalATCommandResponse::GetStatus()
 {
     return static_cast<CommandStatus>(GetDataByte(COMMAND_STATUS_OFFSET));
 }
 
 void
-BeeCoLL::Frames::LocalATCommandResponse::SetStatus(CommandStatus status)
+Frames::LocalATCommandResponse::SetStatus(CommandStatus status)
 {
     SetDataByte(COMMAND_STATUS_OFFSET, static_cast<uint8_t>(status));
 }
 
-BeeCoLL::ATCommand
-BeeCoLL::Frames::LocalATCommandResponse::GetATCommand()
+ATCommand
+Frames::LocalATCommandResponse::GetATCommand()
 {
     return m_at_command;
 }
 
 void
-BeeCoLL::Frames::LocalATCommandResponse::SetATCommand(const ATCommand& at_command)
+Frames::LocalATCommandResponse::SetATCommand(const ATCommand& at_command)
 {
     uint16_t at_command_code = m_at_command.GetATCommand();
     std::vector<uint8_t> data;
@@ -80,7 +82,7 @@ BeeCoLL::Frames::LocalATCommandResponse::SetATCommand(const ATCommand& at_comman
 }
 
 void
-BeeCoLL::Frames::LocalATCommandResponse::GenerateATCommand()
+Frames::LocalATCommandResponse::GenerateATCommand()
 {
     uint16_t at_code = GetDataByte(ATCOMMAND_OFFSET2);
     at_code |= static_cast<uint16_t>(GetDataByte(ATCOMMAND_OFFSET1)) << 8;

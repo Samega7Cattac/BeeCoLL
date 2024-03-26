@@ -15,13 +15,13 @@
 
 // BEECOLL headers
 #include "Frame.hh"
-#include "../ATCommands/ATCommand.hh"
+#include "../../ATCommands/ATCommand.hh"
 
 // STD headers
 #include <vector>
 #include <memory>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace Frames
 {

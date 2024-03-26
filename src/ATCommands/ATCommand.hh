@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
     class BEECOLL_API ATCommand
     {

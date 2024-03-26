@@ -1,11 +1,11 @@
 #include "Coordinator.hh"
-#include "../Frames/ExtendedTransmitStatus.hh"
-#include "../Frames/ExplicitRxIndicator.hh"
-#include "../Frames/LocalATCommandRequest.hh"
-#include "../Frames/LocalATCommandResponse.hh"
-#include "../Frames/ExplicitRxIndicator.hh"
-#include "../Frames/RecievePacket.hh"
-#include "../Frames/TransmitRequest.hh"
+#include "../Frames/Xbee/ExtendedTransmitStatus.hh"
+#include "../Frames/Xbee/ExplicitRxIndicator.hh"
+#include "../Frames/Xbee/LocalATCommandRequest.hh"
+#include "../Frames/Xbee/LocalATCommandResponse.hh"
+#include "../Frames/Xbee/ExplicitRxIndicator.hh"
+#include "../Frames/Xbee/RecievePacket.hh"
+#include "../Frames/Xbee/TransmitRequest.hh"
 
 #include "../ATCommands/NT.hh"
 #include "../ATCommands/SL.hh"
@@ -26,7 +26,9 @@
 // DEBUG HEADERS
 #include <iostream>
 
-BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
+using namespace BeeCoLL::Xbee;
+
+Coordinator::Coordinator(const std::string& serial_device_path) :
     Serial(serial_device_path)
 {
     // LockFD(GetSerialFD());
@@ -150,7 +152,7 @@ BeeCoLL::Coordinator::Coordinator(const std::string& serial_device_path) :
     close(sync_eventfd);
 }
 
-BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
+Coordinator::Coordinator(const Coordinator& other) :
     Serial(other.GetSerialFD())
 {
     m_fd_write = eventfd(0, 0);
@@ -162,7 +164,7 @@ BeeCoLL::Coordinator::Coordinator(const BeeCoLL::Coordinator& other) :
     m_serial_thread = std::move(tmp_thread);
 }
 
-BeeCoLL::Coordinator::~Coordinator()
+Coordinator::~Coordinator()
 {
     uint64_t terminus_value = 1;
     write(m_fd_terminus, &terminus_value, sizeof(terminus_value));
@@ -172,7 +174,7 @@ BeeCoLL::Coordinator::~Coordinator()
 }
 
 void
-BeeCoLL::Coordinator::SendAPICommand(const Frame& frame,
+Coordinator::SendAPICommand(const Frame& frame,
                             const std::function<void(const Frame&)>& callback_function)
 {
     uint64_t value = 0;
@@ -206,19 +208,19 @@ BeeCoLL::Coordinator::SendAPICommand(const Frame& frame,
     write(m_fd_write, &event_value, sizeof(event_value));
 }
 
-std::vector<std::shared_ptr<BeeCoLL::NetworkNode>>
-BeeCoLL::Coordinator::GetNetworkNodes()
+std::vector<std::shared_ptr<NetworkNode>>
+Coordinator::GetNetworkNodes()
 {
     return m_network_nodes;
 }
 
 void
-BeeCoLL::Coordinator::StartDiscover(bool async)
+Coordinator::StartDiscover(bool async)
 {
     if (async == true)
     {
         Frames::LocalATCommandRequest at_nd_frame;
-        BeeCoLL::ATCommands::ND at_nd;
+        ATCommands::ND at_nd;
         at_nd_frame.SetATCommand(at_nd);
 
         SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
@@ -226,7 +228,7 @@ BeeCoLL::Coordinator::StartDiscover(bool async)
     }
     int sync_eventfd = eventfd(0, 0);
     Frames::LocalATCommandRequest at_nt_frame;
-    BeeCoLL::ATCommands::NT at_nt;
+    ATCommands::NT at_nt;
     at_nt_frame.SetATCommand(at_nt);
 
     SendAPICommand(at_nt_frame, [=, this](const Frame& frame){
@@ -248,7 +250,7 @@ BeeCoLL::Coordinator::StartDiscover(bool async)
     read(sync_eventfd, &sync_value, sizeof(sync_value));
 
     Frames::LocalATCommandRequest at_nd_frame;
-    BeeCoLL::ATCommands::ND at_nd;
+    ATCommands::ND at_nd;
     at_nd_frame.SetATCommand(at_nd);
 
     SendAPICommand(at_nd_frame, std::bind(&Coordinator::ATResponseHandler, this, std::placeholders::_1));
@@ -258,7 +260,7 @@ BeeCoLL::Coordinator::StartDiscover(bool async)
 }
 
 void
-BeeCoLL::Coordinator::SendMessageToNode(uint64_t dest_uniq_addr,
+Coordinator::SendMessageToNode(uint64_t dest_uniq_addr,
                                         const std::vector<uint8_t>& msg)
 {
     Frames::TransmitRequest frame;
@@ -269,7 +271,7 @@ BeeCoLL::Coordinator::SendMessageToNode(uint64_t dest_uniq_addr,
 }
 
 void
-BeeCoLL::Coordinator::RegisterCallback(uint8_t frame_id,
+Coordinator::RegisterCallback(uint8_t frame_id,
                               uint8_t frame_response_type,
                               std::function<void(const Frame&)> callback_function)
 {
@@ -277,7 +279,7 @@ BeeCoLL::Coordinator::RegisterCallback(uint8_t frame_id,
 }
 
 void
-BeeCoLL::Coordinator::RemoveCallback(uint8_t frame_id,
+Coordinator::RemoveCallback(uint8_t frame_id,
                               uint8_t frame_response_type)
 {
     for (unsigned int callback_index = 0; callback_index < m_callbacks.size(); ++callback_index)
@@ -293,7 +295,7 @@ BeeCoLL::Coordinator::RemoveCallback(uint8_t frame_id,
 }
 
 void
-BeeCoLL::Coordinator::InterfaceHandler()
+Coordinator::InterfaceHandler()
 {
     unsigned int max_fd = m_fd_terminus;
     if (GetSerialFD() > max_fd)
@@ -368,7 +370,7 @@ BeeCoLL::Coordinator::InterfaceHandler()
 }
 
 void
-BeeCoLL::Coordinator::Parser(const Frame& frame)
+Coordinator::Parser(const Frame& frame)
 {
     if (frame.GetFrameType() == Frames::EXPLICIT_RX_INDICATOR_FRAME_ID)
     {
@@ -411,7 +413,7 @@ BeeCoLL::Coordinator::Parser(const Frame& frame)
 }
 
 void
-BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
+Coordinator::ATResponseHandler(const Frame& frame)
 {
     if (frame.GetFrameType() == Frames::LOCAL_ATCOMMAND_RESPONSE_FRAME_ID)
     {
@@ -426,7 +428,7 @@ BeeCoLL::Coordinator::ATResponseHandler(const Frame& frame)
 }
 
 void
-BeeCoLL::Coordinator::AddNode(ATCommands::ND& node_info)
+Coordinator::AddNode(ATCommands::ND& node_info)
 {
     NetworkNodeInfo node;
     // node.digi_device_type = node_info.GetDigiDeviceType();

@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <termios.h>
+#include <cstdint>
 
 namespace BeeCoLL
 {

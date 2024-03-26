@@ -19,5 +19,4 @@ target_sources(${LIBRARY_TARGET_NAME}
         Node.cpp Node.hh
         SerialInterface.cpp SerialInterface.hh
         Serial.cpp Serial.hh
-        Coordinator.cpp Coordinator.hh
         NetworkNode.cpp NetworkNode.hh)

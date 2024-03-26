@@ -3,6 +3,8 @@
 //STD headers
 #include <algorithm>
 
+using namespace BeeCoLL::Xbee;
+
 constexpr uint8_t SOURCE_ADDR64_OFFSET1 = 7;
 constexpr uint8_t SOURCE_ADDR64_OFFSET2 = 6;
 constexpr uint8_t SOURCE_ADDR64_OFFSET3 = 5;
@@ -16,25 +18,25 @@ constexpr uint8_t SOURCE_NETWORK_ADDR16_OFFSET2 = 8;
 constexpr uint8_t RECEIVE_OPTIONS_OFFSET = 9;
 constexpr uint8_t RECEIVED_DATA_OFFSET = 10;
 
-BeeCoLL::Frames::RecievePacket::RecievePacket(const std::vector<uint8_t>& frame_data) : 
+Frames::RecievePacket::RecievePacket(const std::vector<uint8_t>& frame_data) : 
     Frame(RECEIVE_PACKET_FRAME_ID, frame_data)
 {
 
 }
 
-BeeCoLL::Frames::RecievePacket::RecievePacket(const Frame& other) : 
+Frames::RecievePacket::RecievePacket(const Frame& other) : 
     Frame(other)
 {
 
 }
 
-BeeCoLL::Frames::RecievePacket::~RecievePacket()
+Frames::RecievePacket::~RecievePacket()
 {
 
 }
 
 uint64_t
-BeeCoLL::Frames::RecievePacket::GetSourceUniqueAddr()
+Frames::RecievePacket::GetSourceUniqueAddr()
 {
     uint64_t addr = GetDataByte(SOURCE_ADDR64_OFFSET1);
     addr |= GetDataByte(SOURCE_ADDR64_OFFSET2) << 8;
@@ -48,15 +50,15 @@ BeeCoLL::Frames::RecievePacket::GetSourceUniqueAddr()
 }
 
 uint16_t
-BeeCoLL::Frames::RecievePacket::GetSourceNetworkAddr()
+Frames::RecievePacket::GetSourceNetworkAddr()
 {
     uint16_t addr = GetDataByte(SOURCE_NETWORK_ADDR16_OFFSET1);
     addr |= GetDataByte(SOURCE_NETWORK_ADDR16_OFFSET2);
     return addr;
 }
 
-std::vector<BeeCoLL::Frames::ReceiveOptions>
-BeeCoLL::Frames::RecievePacket::GetReceiveOptions()
+std::vector<Frames::ReceiveOptions>
+Frames::RecievePacket::GetReceiveOptions()
 {
     unsigned char byte = GetDataByte(RECEIVE_OPTIONS_OFFSET);
     std::vector<ReceiveOptions> v;
@@ -81,7 +83,7 @@ BeeCoLL::Frames::RecievePacket::GetReceiveOptions()
 }
 
 std::vector<uint8_t>
-BeeCoLL::Frames::RecievePacket::GetReceivedData()
+Frames::RecievePacket::GetReceivedData()
 {
     std::vector<uint8_t> data = GetData();
     data.erase(data.begin(), data.begin() + RECEIVED_DATA_OFFSET + 1);
@@ -89,7 +91,7 @@ BeeCoLL::Frames::RecievePacket::GetReceivedData()
 }
 
 std::string
-BeeCoLL::Frames::RecievePacket::GetReceivedDataToString()
+Frames::RecievePacket::GetReceivedDataToString()
 {
     std::vector<uint8_t> data = GetReceivedData();
     std::string data_str;

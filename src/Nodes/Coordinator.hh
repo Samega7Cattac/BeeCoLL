@@ -14,7 +14,7 @@
 #endif
 
 // BeeCoLL headers
-#include "../Frames/Frame.hh"
+#include "../Frames/Xbee/Frame.hh"
 #include "Node.hh"
 #include "Serial.hh"
 #include "NetworkNode.hh"
@@ -28,7 +28,7 @@
 #include <functional>
 #include <memory>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
     constexpr const std::size_t N_SUPPORTED_CHANNELS = 16;
 
@@ -50,7 +50,7 @@ namespace BeeCoLL
     {
         uint8_t frame_id;
         uint8_t frame_response_type;
-        std::function<void(const Frame&)> callback_function;
+        std::function<void(const Xbee::Frame&)> callback_function;
     };
 
     //! @brief zigbee network cordinator.

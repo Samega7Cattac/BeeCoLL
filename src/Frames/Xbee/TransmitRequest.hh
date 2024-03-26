@@ -17,7 +17,7 @@
 
 #include <vector>
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace Frames
 {

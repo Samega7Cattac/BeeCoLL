@@ -13,14 +13,17 @@ namespace BeeCoLL
     public:
         virtual ~Serial();
 
-    protected:
-        explicit Serial(int serial_fd);
-        explicit Serial(const std::string& serial_device);
-
-        int GetSerialFD() const;
+        Serial(const std::string& serial_device, unsigned int baud_rate);
+        Serial(const std::string& serial_device, unsigned int baud_rate, unsigned int timeout);
 
         void WriteToSerial(const std::vector<uint8_t>& data);
         std::vector<uint8_t> ReadFromSerial(std::size_t read_n_bytes);
+    protected:
+        explicit Serial(const std::string& serial_device);
+        explicit Serial(int serial_fd);
+
+        int GetSerialFD() const;
+
     
     private:
         serial::Serial m_serial;

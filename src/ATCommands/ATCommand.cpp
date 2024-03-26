@@ -4,7 +4,7 @@
 // TODO Debug headers
 #include <iostream>
 
-using namespace BeeCoLL;
+using namespace BeeCoLL::Xbee;
 
 ATCommand::ATCommand(uint16_t at_command) :
     m_at_command(at_command)

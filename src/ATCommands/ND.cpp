@@ -26,25 +26,25 @@ constexpr uint8_t DIGI_DEVICE_TYPE_OFFSET3 = 20;
 constexpr uint8_t DIGI_DEVICE_TYPE_OFFSET4 = 19;
 constexpr uint8_t RSSI_OF_LAST_HOP_OFFSET = 23;
 
-BeeCoLL::ATCommands::ND::ND() :
+BeeCoLL::Xbee::ATCommands::ND::ND() :
     ATCommand(ND_ATCOMMAND_CODE)
 {
 
 }
 
-BeeCoLL::ATCommands::ND::ND(const ATCommand& other) :
+BeeCoLL::Xbee::ATCommands::ND::ND(const ATCommand& other) :
     ATCommand(other)
 {
 
 }
 
-BeeCoLL::ATCommands::ND::~ND()
+BeeCoLL::Xbee::ATCommands::ND::~ND()
 {
 
 }
 
 uint16_t
-BeeCoLL::ATCommands::ND::GetMY()
+BeeCoLL::Xbee::ATCommands::ND::GetMY()
 {
     uint16_t value;
     value = GetByte(MY_OFFSET1);
@@ -53,7 +53,7 @@ BeeCoLL::ATCommands::ND::GetMY()
 }
 
 uint32_t
-BeeCoLL::ATCommands::ND::GetSH()
+BeeCoLL::Xbee::ATCommands::ND::GetSH()
 {
     uint32_t value;
     value = GetByte(SH_OFFSET1);
@@ -64,7 +64,7 @@ BeeCoLL::ATCommands::ND::GetSH()
 }
 
 uint32_t
-BeeCoLL::ATCommands::ND::GetSL()
+BeeCoLL::Xbee::ATCommands::ND::GetSL()
 {
     uint32_t value;
     value = GetByte(SL_OFFSET1);
@@ -75,7 +75,7 @@ BeeCoLL::ATCommands::ND::GetSL()
 }
 
 std::string
-BeeCoLL::ATCommands::ND::GetNI()
+BeeCoLL::Xbee::ATCommands::ND::GetNI()
 {
     std::string value;
     uint8_t value_index = NI_OFFSET; 
@@ -90,7 +90,7 @@ BeeCoLL::ATCommands::ND::GetNI()
 }
 
 uint16_t
-BeeCoLL::ATCommands::ND::GetParentNetworkAddr()
+BeeCoLL::Xbee::ATCommands::ND::GetParentNetworkAddr()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();
@@ -102,7 +102,7 @@ BeeCoLL::ATCommands::ND::GetParentNetworkAddr()
 }
 
 uint8_t
-BeeCoLL::ATCommands::ND::GetDeviceType()
+BeeCoLL::Xbee::ATCommands::ND::GetDeviceType()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_si = GetNI().length();
@@ -110,7 +110,7 @@ BeeCoLL::ATCommands::ND::GetDeviceType()
 }
 
 uint8_t
-BeeCoLL::ATCommands::ND::GetStatus()
+BeeCoLL::Xbee::ATCommands::ND::GetStatus()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();
@@ -118,7 +118,7 @@ BeeCoLL::ATCommands::ND::GetStatus()
 }
 
 uint16_t
-BeeCoLL::ATCommands::ND::GetProfileID()
+BeeCoLL::Xbee::ATCommands::ND::GetProfileID()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();
@@ -130,7 +130,7 @@ BeeCoLL::ATCommands::ND::GetProfileID()
 }
 
 uint16_t
-BeeCoLL::ATCommands::ND::GetManufactureID()
+BeeCoLL::Xbee::ATCommands::ND::GetManufactureID()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();
@@ -142,7 +142,7 @@ BeeCoLL::ATCommands::ND::GetManufactureID()
 }
 
 uint32_t
-BeeCoLL::ATCommands::ND::GetDigiDeviceType()
+BeeCoLL::Xbee::ATCommands::ND::GetDigiDeviceType()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();
@@ -156,7 +156,7 @@ BeeCoLL::ATCommands::ND::GetDigiDeviceType()
 }
 
 uint8_t
-BeeCoLL::ATCommands::ND::GetRssiOfLastHop()
+BeeCoLL::Xbee::ATCommands::ND::GetRssiOfLastHop()
 {
     // Start of NI + size of NI + last 0
     uint8_t ni_size = GetNI().length();

@@ -17,7 +17,7 @@
 
 constexpr uint16_t SL_ATCOMMAND_CODE = 0x534c;
 
-namespace BeeCoLL
+namespace BeeCoLL::Xbee
 {
 namespace ATCommands
 {
