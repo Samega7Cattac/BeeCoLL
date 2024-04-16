@@ -101,6 +101,18 @@ BeeCoLL::BaseFrame::GetDataBytePtr(unsigned int byte_index)
     return &m_data[byte_index];
 }
 
+const uint8_t*
+BeeCoLL::BaseFrame::GetDataBytePtr(unsigned int byte_index) const
+{
+    if (byte_index >= m_data.size())
+    {
+        // TODO: throw something
+        std::cout << "byte out of scope of data" << std::endl;
+        return 0;
+    }
+    return &m_data[byte_index];
+}
+
 bool
 BeeCoLL::BaseFrame::GetDataBit(unsigned int byte_index, uint8_t bit_offset) const
 {

@@ -102,6 +102,14 @@ DataFrame::SetSourceEndpoint(uint8_t source_endpoint)
                 source_endpoint);
 }
 
+uint8_t
+DataFrame::GetSourceEndpoint() const
+{
+    return GetDataByte(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
+                    m_delivery_mode_address_length + 4);
+}
+
 void
 DataFrame::SetAPSCounter(uint8_t aps_counter)
 {
@@ -109,6 +117,43 @@ DataFrame::SetAPSCounter(uint8_t aps_counter)
                     APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
                     m_delivery_mode_address_length + 5,
                 aps_counter);
+}
+
+
+uint16_t 
+DataFrame::GetProfileID() const
+{
+
+    uint8_t profileid_1 = GetDataByte(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
+                    m_delivery_mode_address_length + 2);
+
+
+    uint8_t profileid_2 = GetDataByte(GetFrameHeaderOffset() +
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
+                    m_delivery_mode_address_length + 3);
+
+    uint16_t profile_id = static_cast<uint16_t>(profileid_2)<<8 | static_cast<uint16_t>(profileid_1);
+
+    return profile_id;
+}
+
+uint16_t 
+DataFrame::GetClusterID() const
+{
+
+    uint8_t clusterid_1 = GetDataByte(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
+                    m_delivery_mode_address_length + 4);
+
+
+    uint8_t clusterid_2 = GetDataByte(GetFrameHeaderOffset() +
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
+                    m_delivery_mode_address_length + 5);
+
+    uint16_t cluster_id = clusterid_2<<8 | clusterid_1;
+
+    return cluster_id;
 }
 
 void

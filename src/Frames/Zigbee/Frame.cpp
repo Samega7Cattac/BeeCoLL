@@ -95,9 +95,8 @@ Frame::SetDestinationIEEEAddress(IEEEAddressType destination_ieee_address)
                         &destination_ieee_address + sizeof(destination_ieee_address)
                    ));
     }
-    
-
 }
+
 void
 Frame::SetSourceIEEEAddress(IEEEAddressType source_ieee_address)
 {
@@ -125,6 +124,24 @@ Frame::SetSourceIEEEAddress(IEEEAddressType source_ieee_address)
     }
 }
 
+IEEEAddressType
+Frame::GetSourceIEEEAddress()
+{
+    const FrameControl* frame_control = GetFrameControlPtr();
+
+    IEEEAddressType address = 0;
+
+    if (frame_control->destination_ieee_address == true)
+    {
+        for (size_t byte_index_offset = 0; byte_index_offset < sizeof(IEEE_ADDRESS_FIELDS_OFFSET); byte_index_offset++)
+        {
+            uint8_t data_byte = GetDataByte(IEEE_ADDRESS_FIELDS_OFFSET + byte_index_offset);
+            address |= data_byte << byte_index_offset*sizeof(uint8_t);
+        }
+    }
+
+    return address;
+}
 
 
 uint8_t
@@ -135,9 +152,9 @@ Frame::GetFrameType()
 }
 
 uint8_t
-Frame::GetFrameHeaderOffset()
+Frame::GetFrameHeaderOffset() const
 {
-    FrameControl* frame_control = GetFrameControlPtr();
+    const FrameControl* frame_control = GetFrameControlPtr();
     uint8_t offset = 
         sizeof(FrameControl) + 2*sizeof(AddressType) +
         sizeof(IEEEAddressType)*(frame_control->destination_ieee_address + 
@@ -152,5 +169,12 @@ FrameControl*
 Frame::GetFrameControlPtr()
 {
     return reinterpret_cast<FrameControl*>(
+                GetDataBytePtr(FrameOffsets::FRAME_CONTROL_OFFSET));
+}
+
+const FrameControl*
+Frame::GetFrameControlPtr() const
+{
+    return reinterpret_cast<const FrameControl*>(
                 GetDataBytePtr(FrameOffsets::FRAME_CONTROL_OFFSET));
 }

@@ -19,32 +19,18 @@
 #include <cstdint>
 
 // BeeCoLL includes
+#include "../ZCLAttribute.hh"
 #include "ZCLPayload.hh"
 
 namespace BeeCoLL::Zigbee
 {
 
-    enum ZCLAttributeDataType
-    {
-        ZCL_DATATYPE_NULL = 0x00,
-        ZCL_DATATYPE_UINT16 = 0x21,
-        ZCL_DATATYPE_INT32 = 0x2b,
-        ZCL_DATATYPE_FLOAT = 0x39
-    };
-
     class BEECOLL_API ZCLAttributeReport : public ZCLPayload
     {
         public:
             explicit ZCLAttributeReport(DataFrame& data_frame);
-        
-            struct Attribute
-            {
-                enum ZCLAttributeDataType data_type;
-                uint16_t attribute_id;
-                std::vector<uint8_t> attribute_value;
-            };
 
-            Attribute GetAttribute(uint8_t attribute_index);
+            ZCLAttribute GetAttribute(uint8_t attribute_index);
 
             uint8_t GetAttributeListSize() const;
 

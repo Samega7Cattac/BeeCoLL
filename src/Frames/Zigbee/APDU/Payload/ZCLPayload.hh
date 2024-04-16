@@ -61,6 +61,7 @@ namespace BeeCoLL::Zigbee
             void InsertData(unsigned int byte_index, const std::vector<uint8_t>& data);
 
             uint8_t GetDataByte(unsigned int byte_offset);
+            std::vector<uint8_t>& GetData();
 
         private:
             DataFrame& m_data_frame;

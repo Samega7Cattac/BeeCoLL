@@ -19,13 +19,10 @@ APDUFrame::APDUFrame(uint8_t apduframe_type) : APDUFrame()
     SetAPDUFrameType(apduframe_type);
 }
 
-
-
 APDUFrame::APDUFrame(const std::vector<uint8_t>& frame) : Frame(frame)
 {
     
 }
-
 
 APDUFrame::APDUFrame(const APDUFrame& other_apduframe) : 
     Frame(other_apduframe)

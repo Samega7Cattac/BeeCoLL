@@ -76,5 +76,12 @@ ZCLPayload::GetDataByte(unsigned int byte_offset)
 }
 
 
+std::vector<uint8_t>& 
+ZCLPayload::GetData()
+{
+    return m_data_frame.GetData();
+}
+
+
 
 

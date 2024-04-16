@@ -69,10 +69,14 @@ namespace BeeCoLL::Zigbee
         virtual ~Frame() override;
 
         void SetDestinationAddress(AddressType destination_address);
+
         void SetSourceAddress(AddressType destination_address);
         AddressType GetSourceAddress();
+
         void SetDestinationIEEEAddress(IEEEAddressType destination_ieee_address);
+
         void SetSourceIEEEAddress(IEEEAddressType destination_ieee_address);
+        IEEEAddressType GetSourceIEEEAddress();
 
 
         uint8_t GetFrameType();
@@ -83,10 +87,11 @@ namespace BeeCoLL::Zigbee
     protected:
         explicit Frame(uint8_t frame_type);
 
-        uint8_t GetFrameHeaderOffset();
+        uint8_t GetFrameHeaderOffset() const;
 
         FrameControl* GetFrameControlPtr();
-    
+        const FrameControl* GetFrameControlPtr() const;
+
     
     };
 };

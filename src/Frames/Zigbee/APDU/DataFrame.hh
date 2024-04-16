@@ -40,6 +40,7 @@ namespace BeeCoLL::Zigbee
         void SetClusterID(uint16_t cluster_id);
 
         void SetSourceEndpoint(uint8_t source_endpoint);
+        uint8_t GetSourceEndpoint() const;
 
         void SetAPSCounter(uint8_t aps_counter);
 

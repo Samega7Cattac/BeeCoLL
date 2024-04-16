@@ -50,6 +50,7 @@ namespace BeeCoLL
         virtual void SetData(const std::vector<uint8_t>& data);
         uint8_t GetDataByte(unsigned int byte_index) const;
         uint8_t* GetDataBytePtr(unsigned int byte_index);
+        const uint8_t* GetDataBytePtr(unsigned int byte_index) const;
 
         virtual void SetDataByte(unsigned int byte_index, uint8_t byte);
 
