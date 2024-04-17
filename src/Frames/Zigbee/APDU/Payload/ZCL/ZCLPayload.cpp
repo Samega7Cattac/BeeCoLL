@@ -22,6 +22,8 @@ uint8_t ZCLPayload::GetZCLPayloadCommandIdentifier(DataFrame& data_frame)
 ZCLPayload::ZCLPayload(DataFrame& data_frame, uint8_t command_identifier) :
     m_data_frame(data_frame)
 {
+    m_data_frame.SetDataByte(m_data_frame.GetPayloadOffset(), 0);
+
     uint8_t transaction_sequence_offset = 
         GetPayloadOffset() +
         IsManufacturerSpecific()*sizeof(uint16_t);
