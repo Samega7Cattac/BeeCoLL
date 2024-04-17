@@ -4,7 +4,8 @@ using namespace BeeCoLL::Zigbee;
 
 constexpr unsigned int ZCL_COMMAND_ATTRIBUTE_REPORT = 0x0a;
 
-ZCLAttributeReport::ZCLAttributeReport(DataFrame& data_frame) : ZCLPayload(data_frame)
+ZCLAttributeReport::ZCLAttributeReport(DataFrame& data_frame) : 
+    ZCLPayload(data_frame, ZCL_COMMAND_ATTRIBUTE_REPORT)
 {
     UpdateAttributeListSize();
 }

@@ -19,7 +19,7 @@
 #include <cstdint>
 
 // BeeCoLL includes
-#include "../DataFrame.hh"
+#include "../../DataFrame.hh"
 
 namespace BeeCoLL::Zigbee
 {
@@ -48,14 +48,18 @@ namespace BeeCoLL::Zigbee
     class BEECOLL_API ZCLPayload
     {
         public:
-            explicit ZCLPayload(DataFrame& data_frame);
+            static uint8_t GetZCLPayloadCommandIdentifier(DataFrame& data_frame);
 
             void SetManufacturerCode(uint16_t manufacturer_code);
 
             uint8_t GetPayloadOffset();
             uint8_t GetPayloadSize();
 
+            bool IsManufacturerSpecific();
+
         protected:
+            explicit ZCLPayload(DataFrame& data_frame, uint8_t command_identifier);
+
             ZCLPayloadControl* GetPayloadControlPtr();
 
             void InsertData(unsigned int byte_index, const std::vector<uint8_t>& data);
@@ -63,8 +67,8 @@ namespace BeeCoLL::Zigbee
             uint8_t GetDataByte(unsigned int byte_offset);
             std::vector<uint8_t>& GetData();
 
-        private:
             DataFrame& m_data_frame;
+        private:
     
     };
 };

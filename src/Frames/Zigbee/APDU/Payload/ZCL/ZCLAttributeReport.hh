@@ -19,7 +19,7 @@
 #include <cstdint>
 
 // BeeCoLL includes
-#include "../ZCLAttribute.hh"
+#include "ZCLAttribute.hh"
 #include "ZCLPayload.hh"
 
 namespace BeeCoLL::Zigbee

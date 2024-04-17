@@ -111,6 +111,21 @@ DataFrame::GetSourceEndpoint() const
 }
 
 void
+DataFrame::SetDestinationEndpoint(uint8_t destination_endpoint)
+{
+    SetDataByte(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET,
+                destination_endpoint);
+}
+
+uint8_t
+DataFrame::GetDestinationEndpoint() const
+{
+    return GetDataByte(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET);
+}
+
+void
 DataFrame::SetAPSCounter(uint8_t aps_counter)
 {
     SetDataByte(GetFrameHeaderOffset() + 

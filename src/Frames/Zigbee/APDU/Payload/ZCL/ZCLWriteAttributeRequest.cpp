@@ -4,7 +4,8 @@ using namespace BeeCoLL::Zigbee;
 
 constexpr unsigned int ZCL_COMMAND_WRITE_ATTRIBUTE_REQUEST = 0x02;
 
-ZCLWriteAttributeRequest::ZCLWriteAttributeRequest(DataFrame& data_frame) : ZCLPayload(data_frame) 
+ZCLWriteAttributeRequest::ZCLWriteAttributeRequest(DataFrame& data_frame) : 
+     ZCLPayload(data_frame, ZCL_COMMAND_WRITE_ATTRIBUTE_REQUEST) 
 {
 }
 

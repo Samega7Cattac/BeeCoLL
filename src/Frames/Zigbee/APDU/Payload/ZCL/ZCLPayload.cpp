@@ -5,9 +5,33 @@ using namespace BeeCoLL::Zigbee;
 constexpr unsigned int ZCL_PAYLOAD_HEADER_INITIAL_SIZE = 3;
 constexpr unsigned int ZCL_PAYLOAD_MANUFACTURER_SPECIFIC_CODE_OFFSET = 1;
 
-ZCLPayload::ZCLPayload(DataFrame& data_frame) :
+
+uint8_t ZCLPayload::GetZCLPayloadCommandIdentifier(DataFrame& data_frame)
+{
+    uint8_t payload_offset = data_frame.GetPayloadOffset();
+
+    ZCLPayloadControl payload_control = static_cast<ZCLPayloadControl>(data_frame.GetDataByte(payload_offset)); 
+
+    return data_frame.GetDataByte(
+        data_frame.GetPayloadOffset() + 
+        sizeof(ZCLPayloadControl) +
+        payload_control.manufacturer_specific*sizeof(uint16_t) + 
+        sizeof(uint8_t));
+}
+
+ZCLPayload::ZCLPayload(DataFrame& data_frame, uint8_t command_identifier) :
     m_data_frame(data_frame)
 {
+    uint8_t transaction_sequence_offset = 
+        GetPayloadOffset() +
+        IsManufacturerSpecific()*sizeof(uint16_t);
+
+    uint8_t command_identifier_offset =
+        transaction_sequence_offset +
+        sizeof(uint8_t);
+
+    InsertData(transaction_sequence_offset, {0});
+    InsertData(command_identifier_offset, {command_identifier});
 }
 
 void
@@ -49,6 +73,13 @@ uint8_t
 ZCLPayload::GetPayloadSize()
 {
     return m_data_frame.GetPayloadSize();
+}
+
+
+bool 
+ZCLPayload::IsManufacturerSpecific()
+{
+    return GetPayloadControlPtr()->manufacturer_specific;
 }
 
 

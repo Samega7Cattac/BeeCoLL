@@ -42,6 +42,9 @@ namespace BeeCoLL::Zigbee
         void SetSourceEndpoint(uint8_t source_endpoint);
         uint8_t GetSourceEndpoint() const;
 
+        void SetDestinationEndpoint(uint8_t source_endpoint);
+        uint8_t GetDestinationEndpoint() const;
+
         void SetAPSCounter(uint8_t aps_counter);
 
         uint16_t GetProfileID() const;
@@ -49,17 +52,17 @@ namespace BeeCoLL::Zigbee
         uint16_t GetClusterID() const;
 
         void SetUnicastDeliveryMode(uint8_t endpoint_address);
-
         void SetGroupDeliveryMode(uint16_t group_address);
 
+        unsigned int GetPayloadOffset() const;
+
+        unsigned int GetPayloadSize() const;
     protected:
         unsigned int GetDeliveryModeAddressLength() const;
 
         void SetPayloadOffset(unsigned int payload_offset);
-        unsigned int GetPayloadOffset() const;
 
         void SetPayloadSize(unsigned int payload_size);
-        unsigned int GetPayloadSize() const;
 
     private:
         unsigned int m_payload_offset;
@@ -72,6 +75,7 @@ namespace BeeCoLL::Zigbee
 
 
     friend class ZCLPayload;
+    friend class ZDOPayload;
     };
 };
 
