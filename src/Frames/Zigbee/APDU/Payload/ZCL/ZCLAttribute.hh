@@ -25,6 +25,7 @@ namespace BeeCoLL::Zigbee
     enum ZCLAttributeDataType : uint8_t
     {
         ZCL_DATATYPE_NULL = 0x00,
+        ZCL_DATATYPE_BOOL = 0x10,
         ZCL_DATATYPE_UINT16 = 0x21,
         ZCL_DATATYPE_UINT32 = 0x23,
         ZCL_DATATYPE_INT32 = 0x2b,

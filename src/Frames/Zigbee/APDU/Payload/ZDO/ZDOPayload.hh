@@ -24,6 +24,13 @@
 namespace BeeCoLL::Zigbee
 {
 
+    enum ZDOCommandClusterID : uint16_t
+    {
+	    ZDO_COMMAND_SIMPLE_DESCRIPTOR_REQUEST = 0x0004,
+	    ZDO_COMMAND_SIMPLE_DESCRIPTOR_RESPONSE = 0x8004,
+	    ZDO_COMMAND_DEVICE_ANNOUNCE = 0x0013
+    };
+
     class BEECOLL_API ZDOPayload
     {
         public:
@@ -38,9 +45,10 @@ namespace BeeCoLL::Zigbee
             void InsertData(unsigned int byte_index, const std::vector<uint8_t>& data);
 
             void SetDataByte(unsigned int byte_offset, uint8_t byte);
-            uint8_t GetDataByte(unsigned int byte_offset);
+            uint8_t GetDataByte(unsigned int byte_offset) const;
 
             std::vector<uint8_t>& GetData();
+            std::vector<uint8_t>& GetData() const;
 
             DataFrame& m_data_frame;
         private:

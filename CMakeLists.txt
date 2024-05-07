@@ -26,30 +26,95 @@ else()
             -fPIC)
 endif()
 
-# Add extra flags to the compiler
-add_compile_options(-Werror -Wall -Wextra)
+message(STATUS "Configuration type: ${CMAKE_BUILD_TYPE}")
 
-# In case of building in debug it spreds that definition to all targets
+# Add extra flags to the compiler
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-     add_compile_definitions("DEBUG")
+    add_compile_definitions("DEBUG")
+    target_compile_options(${LIBRARY_TARGET_NAME}
+        PRIVATE
+            # Increased reliability of backtraces
+            -fasynchronous-unwind-tables
+            # Store compiler flags in debugging information
+            -grecord-gcc-switches
+    )
+
+elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(${LIBRARY_TARGET_NAME}
+        PRIVATE
+            # Optimizations
+            -O3
+            # Run-time buffer overflow detection
+            -D_FORTIFY_SOURCE=2
+    )
+    
+    # Check and enable LTO support if possible
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT supported OUTPUT error)
+    if (supported)
+        message(STATUS "IPO / LTO support: enabled")
+        set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        message(STATUS "IPO / LTO support: disabled (<${error}>)")
+    endif()
 endif()
 
+# Add extra flags to the compiler
+target_compile_options(${LIBRARY_TARGET_NAME}
+    PRIVATE
+        # -Werror
+        -Wall
+        -Wextra
+        -Wpedantic
+        # Run-time bounds checking for C++ strings and containers
+        -D_GLIBCXX_ASSERTIONS
+        # Enable table-based thread cancellation
+        -fexceptions
+        # No text relocations for shared libraries
+        -fpic
+        # Increased reliability of stack overflow detection
+        -fstack-clash-protection
+        # Stack smashing protector
+        -fstack-protector-strong
+        # Detect and reject underlinking
+        -Wl,-z,defs
+        # Disable lazy binding
+        -Wl,-z,now
+        # Read-only segments after relocation
+        -Wl,-z,relro
+)
+
+if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "64Bit")
+    target_compile_options(${LIBRARY_TARGET_NAME}
+        PRIVATE
+            # Control flow integrity protection
+            -fcf-protection
+    )
+endif ()
+
+add_subdirectory(deps)
 add_subdirectory(src)
+
+###
+# INSTALL
+###
+
+include(GNUInstallDirs)
 
 install(
     TARGETS ${LIBRARY_TARGET_NAME}
     EXPORT "${LIBRARY_TARGET_NAME}Config"
-    DESTINATION lib
-    INCLUDES DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 install(EXPORT "${LIBRARY_TARGET_NAME}Config"
         FILE "${LIBRARY_TARGET_NAME}Config.cmake"
         NAMESPACE beecoll::
-        DESTINATION cmake)
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake)
 
 install(
     DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
-    DESTINATION include/beecoll
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/beecoll
     FILES_MATCHING
     PATTERN "*.hh")
 

@@ -43,7 +43,7 @@ namespace BeeCoLL::Zigbee
     struct APDUFrameControl
     {
         uint8_t apduframe_type : 2;
-        uint8_t delivery_type : 2;
+        uint8_t delivery_type : 2 = DeliveryType::UNICAST_DELIVERY_MODE;
         bool ack_format : 1;
         bool security : 1;
         bool ack_request : 1;

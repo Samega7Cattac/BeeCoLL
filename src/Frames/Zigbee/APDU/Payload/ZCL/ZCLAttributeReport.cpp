@@ -2,10 +2,8 @@
 
 using namespace BeeCoLL::Zigbee;
 
-constexpr unsigned int ZCL_COMMAND_ATTRIBUTE_REPORT = 0x0a;
-
 ZCLAttributeReport::ZCLAttributeReport(DataFrame& data_frame) : 
-    ZCLPayload(data_frame, ZCL_COMMAND_ATTRIBUTE_REPORT)
+    ZCLPayload(data_frame)
 {
     UpdateAttributeListSize();
 }
@@ -23,7 +21,7 @@ ZCLAttributeReport::GetAttribute(uint8_t attribute_index)
 
 
     uint8_t attribute_size = 0;
-    uint8_t payload_offset = GetPayloadOffset();
+    uint8_t payload_offset = GetPayloadOffset() + 3;
 
     ZCLAttribute attribute;
 
@@ -45,7 +43,9 @@ ZCLAttributeReport::GetAttribute(uint8_t attribute_index)
         case ZCLAttributeDataType::ZCL_DATATYPE_FLOAT :
             attribute_data_length = 4;
             break;
-        
+        case ZCLAttributeDataType::ZCL_DATATYPE_BOOL :
+            attribute_data_length = 3;
+            break;
         default:
             attribute_data_length = 2;
             break;
@@ -79,7 +79,7 @@ ZCLAttributeReport::UpdateAttributeListSize()
 {
 
     bool has_next_attribute = true;
-    uint8_t payload_offset = GetPayloadOffset();
+    uint8_t payload_offset = GetPayloadOffset() + 3;
     uint8_t attribute_size = 0;
 
     while(has_next_attribute == true)
@@ -108,6 +108,10 @@ ZCLAttributeReport::UpdateAttributeListSize()
             payload_offset += 2 + 1 + 2;
             attribute_size++;
             break;
+
+        case ZCL_DATATYPE_BOOL:
+            payload_offset += 2 + 1 + 1;
+            attribute_size++;
         
         default:
             has_next_attribute = false;

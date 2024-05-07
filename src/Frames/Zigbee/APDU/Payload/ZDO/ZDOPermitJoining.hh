@@ -1,5 +1,5 @@
-#ifndef BEECOLL_API_ZDO_SIMPLE_DESCRIPTOR_REQUEST_HH
-#define BEECOLL_API_ZDO_SIMPLE_DESCRIPTOR_REQUEST_HH
+#ifndef BEECOLL_API_ZDO_PERMIT_JOINING_HH
+#define BEECOLL_API_ZDO_PERMIT_JOINING_HH
 
 
 #ifdef _WIN32
@@ -24,13 +24,12 @@
 namespace BeeCoLL::Zigbee
 {
 
-    class BEECOLL_API ZDOSimpleDescriptorRequest : public ZDOPayload
+    class BEECOLL_API ZDOPermitJoining : public ZDOPayload
     {
         public:
-            explicit ZDOSimpleDescriptorRequest(DataFrame& data_frame);
+            explicit ZDOPermitJoining(DataFrame& data_frame);
 
-            void SetTargetNetworkAddress(uint16_t network_address);
-            void SetTargetEndpoint(uint8_t endpoint);
+            void SetPermitDuration(uint8_t endpoint);
 
         
         protected:
@@ -40,4 +39,4 @@ namespace BeeCoLL::Zigbee
 
 
 
-#endif // BEECOLL_API_ZDO_SIMPLE_DESCRIPTOR_REQUEST_HH
+#endif // BEECOLL_API_ZDO_PERMIT_JOINING_HH

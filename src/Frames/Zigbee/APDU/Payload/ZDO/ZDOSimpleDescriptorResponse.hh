@@ -24,11 +24,26 @@
 namespace BeeCoLL::Zigbee
 {
 
+    enum ZDOSimpleDescriptorStatus : uint8_t
+    {
+        SUCCESS,
+        INVALID_EP,
+        NOT_ACTIVE,
+        DEVICE_NOT_FOUND,
+        INV_REQUESTTYPE,
+        NO_DESCRIPTOR
+    };
+
     struct ZDOSimpleDescriptorStaticFields
     {
+        enum ZDOSimpleDescriptorStatus status;
+        uint16_t target_network_address;
+        uint8_t simple_descriptor_length;
         uint8_t endpoint;
         uint16_t profile_id;
         uint16_t device_id;
+        uint8_t device_version : 4;
+        uint8_t reserved : 4;
     };
 
     class BEECOLL_API ZDOSimpleDescriptorResponse : public ZDOPayload
@@ -36,22 +51,29 @@ namespace BeeCoLL::Zigbee
         public:
             explicit ZDOSimpleDescriptorResponse(DataFrame& data_frame);
 
-            uint8_t GetEndpoint();
+            enum ZDOSimpleDescriptorStatus GetSimpleDescriptorStatus() const;
 
-            uint16_t GetProfileID();
+            uint16_t GetTargetNetworkAddress() const;
 
-            uint16_t GetDeviceID();
+            uint8_t GetSimpleDescriptorLength() const;
 
-            uint8_t GetInputClusterCount();
-            uint16_t GetInputCluster(uint8_t input_cluster_index);
+            uint8_t GetEndpoint() const;
 
-            uint8_t GetOutputClusterCount();
-            uint16_t GetOutputCluster(uint8_t output_cluster_index);
+            uint16_t GetProfileID() const;
+
+            uint16_t GetDeviceID() const;
+
+            uint8_t GetInputClusterCount() const;
+            uint16_t GetInputCluster(uint8_t input_cluster_index) const;
+
+            uint8_t GetOutputClusterCount() const;
+            uint16_t GetOutputCluster(uint8_t output_cluster_index) const;
         
         protected:
             ZDOSimpleDescriptorStaticFields* GetZDOSimpleDescriptorStaticFieldsPtr();
+            const ZDOSimpleDescriptorStaticFields* GetZDOSimpleDescriptorStaticFieldsPtr() const;
 
-            uint8_t GetZDOSimpleDescriptorOffset();
+            uint8_t GetZDOSimpleDescriptorOffset() const;
         private:
     };
 };

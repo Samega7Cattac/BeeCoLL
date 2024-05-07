@@ -8,8 +8,35 @@ ZDOSimpleDescriptorResponse::ZDOSimpleDescriptorResponse(DataFrame& data_frame) 
 }
 
 
+
+enum ZDOSimpleDescriptorStatus 
+ZDOSimpleDescriptorResponse::GetSimpleDescriptorStatus() const
+{
+    const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
+
+    return static_fields->status;
+}
+
+uint16_t 
+ZDOSimpleDescriptorResponse::GetTargetNetworkAddress() const
+{
+
+    const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
+
+    return static_fields->target_network_address;
+}
+
 uint8_t 
-ZDOSimpleDescriptorResponse::GetEndpoint()
+ZDOSimpleDescriptorResponse::GetSimpleDescriptorLength() const
+{
+    const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
+
+    return static_fields->simple_descriptor_length;
+}
+
+
+uint8_t 
+ZDOSimpleDescriptorResponse::GetEndpoint() const
 {
     const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
 
@@ -17,7 +44,7 @@ ZDOSimpleDescriptorResponse::GetEndpoint()
 }
 
 uint16_t 
-ZDOSimpleDescriptorResponse::GetProfileID()
+ZDOSimpleDescriptorResponse::GetProfileID() const
 {
     const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
 
@@ -25,7 +52,7 @@ ZDOSimpleDescriptorResponse::GetProfileID()
 }
 
 uint16_t 
-ZDOSimpleDescriptorResponse::GetDeviceID()
+ZDOSimpleDescriptorResponse::GetDeviceID() const
 {
     const ZDOSimpleDescriptorStaticFields* static_fields = GetZDOSimpleDescriptorStaticFieldsPtr();
 
@@ -33,44 +60,44 @@ ZDOSimpleDescriptorResponse::GetDeviceID()
 }
 
 uint8_t 
-ZDOSimpleDescriptorResponse::GetInputClusterCount()
+ZDOSimpleDescriptorResponse::GetInputClusterCount() const
 {
     uint8_t input_cluster_offset = m_data_frame.GetPayloadOffset() + sizeof(ZDOSimpleDescriptorStaticFields);
 
-    return GetData().at(input_cluster_offset);
+    return GetDataByte(input_cluster_offset);
 }
 
 uint16_t 
-ZDOSimpleDescriptorResponse::GetInputCluster(uint8_t input_cluster_index)
+ZDOSimpleDescriptorResponse::GetInputCluster(uint8_t input_cluster_index) const
 {
     uint8_t input_cluster_id_offset = 
         m_data_frame.GetPayloadOffset() +
         sizeof(ZDOSimpleDescriptorStaticFields) +
         input_cluster_index*sizeof(uint16_t);
 
-    uint8_t cluster_id_1 = GetData().at(input_cluster_id_offset);
-    uint8_t cluster_id_2 = GetData().at(input_cluster_id_offset + 1);
+    uint8_t cluster_id_1 = GetDataByte(input_cluster_id_offset);
+    uint8_t cluster_id_2 = GetDataByte(input_cluster_id_offset + 1);
 
     uint16_t cluster_id = 
         static_cast<uint16_t>(cluster_id_1) + 
-        static_cast<uint16_t>(cluster_id_2<<sizeof(uint8_t)); 
+        static_cast<uint16_t>(cluster_id_2<<8); 
 
     return cluster_id;
 }
 
 uint8_t 
-ZDOSimpleDescriptorResponse::GetOutputClusterCount()
+ZDOSimpleDescriptorResponse::GetOutputClusterCount() const
 {
     uint8_t output_cluster_offset = 
         m_data_frame.GetPayloadOffset() + 
         sizeof(ZDOSimpleDescriptorStaticFields) + 
         GetInputClusterCount();
 
-    return GetData().at(output_cluster_offset);
+    return GetDataByte(output_cluster_offset);
 }
 
 uint16_t 
-ZDOSimpleDescriptorResponse::GetOutputCluster(uint8_t output_cluster_index)
+ZDOSimpleDescriptorResponse::GetOutputCluster(uint8_t output_cluster_index) const 
 {
     uint8_t output_cluster_id_offset = 
         m_data_frame.GetPayloadOffset() + 
@@ -78,12 +105,12 @@ ZDOSimpleDescriptorResponse::GetOutputCluster(uint8_t output_cluster_index)
         GetInputClusterCount() +
         output_cluster_index*sizeof(uint16_t);
 
-    uint8_t cluster_id_1 = GetData().at(output_cluster_id_offset);
-    uint8_t cluster_id_2 = GetData().at(output_cluster_id_offset + 1);
+    uint8_t cluster_id_1 = GetDataByte(output_cluster_id_offset);
+    uint8_t cluster_id_2 = GetDataByte(output_cluster_id_offset + 1);
 
     uint16_t cluster_id = 
         static_cast<uint16_t>(cluster_id_1) + 
-        static_cast<uint16_t>(cluster_id_2<<sizeof(uint8_t)); 
+        static_cast<uint16_t>(cluster_id_2<<8); 
 
     return cluster_id;
 }
@@ -94,11 +121,19 @@ ZDOSimpleDescriptorResponse::GetZDOSimpleDescriptorStaticFieldsPtr()
 {
     uint8_t discovery_offset = GetZDOSimpleDescriptorOffset(); 
 
-    return reinterpret_cast<ZDOSimpleDescriptorStaticFields*>(GetData().at(discovery_offset));
+    return reinterpret_cast<ZDOSimpleDescriptorStaticFields*>(GetData().data() + discovery_offset);
+}
+
+const ZDOSimpleDescriptorStaticFields* 
+ZDOSimpleDescriptorResponse::GetZDOSimpleDescriptorStaticFieldsPtr() const
+{
+    uint8_t discovery_offset = GetZDOSimpleDescriptorOffset(); 
+
+    return reinterpret_cast<const ZDOSimpleDescriptorStaticFields*>(GetData().data() + discovery_offset);
 }
 
 uint8_t
-ZDOSimpleDescriptorResponse::GetZDOSimpleDescriptorOffset()
+ZDOSimpleDescriptorResponse::GetZDOSimpleDescriptorOffset() const
 {
     return m_data_frame.GetPayloadOffset() /*+ sizeof(ZCLPayloadControl)*/;
 }

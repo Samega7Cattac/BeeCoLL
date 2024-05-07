@@ -53,6 +53,7 @@ namespace BeeCoLL::Zigbee
 
         void SetUnicastDeliveryMode(uint8_t endpoint_address);
         void SetGroupDeliveryMode(uint16_t group_address);
+        void SetBroadcastDeliveryMode();
 
         unsigned int GetPayloadOffset() const;
 

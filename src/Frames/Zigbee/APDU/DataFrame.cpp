@@ -24,10 +24,10 @@ DataFrame::DataFrame(const DataFrame& other_frame) :
     SetPayloadOffset(other_frame.GetPayloadOffset());
     m_delivery_mode_address_length = other_frame.GetDeliveryModeAddressLength();
 
-    SetPayloadSize(other_frame.GetPayloadSize());
+    SetPayloadSize(other_frame.GetPayloadSize());                                                                                                                                                                                                                                       
 }
 
-
+                    
 DataFrame::DataFrame(const std::vector<uint8_t>& frame) : APDUFrame(frame)
 {
     uint8_t delivery_type = GetAPDUFrameControlPtr()->delivery_type;
@@ -159,14 +159,14 @@ DataFrame::GetClusterID() const
 
     uint8_t clusterid_1 = GetDataByte(GetFrameHeaderOffset() + 
                     APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
-                    m_delivery_mode_address_length + 4);
+                    m_delivery_mode_address_length);
 
 
     uint8_t clusterid_2 = GetDataByte(GetFrameHeaderOffset() +
                     APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 
-                    m_delivery_mode_address_length + 5);
+                    m_delivery_mode_address_length + 1);
 
-    uint16_t cluster_id = clusterid_2<<8 | clusterid_1;
+    uint16_t cluster_id = static_cast<uint16_t>(clusterid_2<<8) | static_cast<uint16_t>(clusterid_1);
 
     return cluster_id;
 }
@@ -209,6 +209,24 @@ DataFrame::SetGroupDeliveryMode(uint16_t group_address)
                                     (uint8_t*)&group_address + sizeof(group_address)));
 }
 
+
+void
+DataFrame::SetBroadcastDeliveryMode()
+{
+    UnsetDeliveryModeAdresses();
+    SetDeliveryModeType(DeliveryType::BROADCAST_DELIVERY_MODE);
+
+    m_delivery_mode_address_length = 2;
+    SetPayloadOffset(GetFrameHeaderOffset() + 9);
+    
+    uint16_t group_address = 0xffff;
+
+    InsertData(GetFrameHeaderOffset() + 
+                    APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET,
+               std::vector<uint8_t>((uint8_t*)&group_address,
+                                    ((uint8_t*)&group_address) + sizeof(group_address)));
+}
+
 unsigned int
 DataFrame::GetDeliveryModeAddressLength() const
 {
@@ -226,6 +244,7 @@ DataFrame::UnsetDeliveryModeAdresses()
         EraseData(GetFrameHeaderOffset() + APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET);
         break;
     
+    case DeliveryType::BROADCAST_DELIVERY_MODE :
     case DeliveryType::GROUP_DELIVERY_MODE :
         EraseData(GetFrameHeaderOffset() + APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET);
         EraseData(GetFrameHeaderOffset() + APDUFrameOffsets::DELIVERY_ADDRESS_FIELD_OFFSET + 1);

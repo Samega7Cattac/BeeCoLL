@@ -33,7 +33,7 @@ ZDOPayload::SetDataByte(unsigned int byte_index, uint8_t byte)
 }
 
 uint8_t 
-ZDOPayload::GetDataByte(unsigned int byte_offset)
+ZDOPayload::GetDataByte(unsigned int byte_offset) const
 {
     return m_data_frame.GetDataByte(byte_offset);
 }
@@ -41,6 +41,13 @@ ZDOPayload::GetDataByte(unsigned int byte_offset)
 
 std::vector<uint8_t>& 
 ZDOPayload::GetData()
+{
+    return m_data_frame.GetData();
+}
+
+
+std::vector<uint8_t>& 
+ZDOPayload::GetData() const
 {
     return m_data_frame.GetData();
 }

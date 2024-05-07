@@ -45,10 +45,16 @@ namespace BeeCoLL::Zigbee
         uint8_t reserved : 2;
     };
 
+    enum ZCLCommandID : uint8_t
+    {
+        ZCL_COMMAND_WRITE_ATTRIBUTE_REQUEST = 0x02,
+        ZCL_COMMAND_ATTRIBUTE_REPORT = 0x0a,
+    };
+
     class BEECOLL_API ZCLPayload
     {
         public:
-            static uint8_t GetZCLPayloadCommandIdentifier(DataFrame& data_frame);
+            static enum ZCLCommandID GetZCLPayloadCommandIdentifier(DataFrame& data_frame);
 
             void SetManufacturerCode(uint16_t manufacturer_code);
 
@@ -59,6 +65,8 @@ namespace BeeCoLL::Zigbee
 
         protected:
             explicit ZCLPayload(DataFrame& data_frame, uint8_t command_identifier);
+
+            explicit ZCLPayload(DataFrame& data_frame);
 
             ZCLPayloadControl* GetPayloadControlPtr();
 
