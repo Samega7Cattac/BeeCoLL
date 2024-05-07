@@ -92,7 +92,14 @@ if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "64Bit")
     )
 endif ()
 
+# Add include directories for build and install
+target_include_directories(${LIBRARY_TARGET_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
+
 add_subdirectory(deps)
+add_subdirectory(include/beecoll)
 add_subdirectory(src)
 
 ###
@@ -105,26 +112,24 @@ install(
     TARGETS ${LIBRARY_TARGET_NAME}
     EXPORT "${LIBRARY_TARGET_NAME}Config"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 install(EXPORT "${LIBRARY_TARGET_NAME}Config"
-        FILE "${LIBRARY_TARGET_NAME}Config.cmake"
-        NAMESPACE beecoll::
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake)
-
-install(
-    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/beecoll
-    FILES_MATCHING
-    PATTERN "*.hh")
+    FILE "${LIBRARY_TARGET_NAME}Config.cmake"
+    NAMESPACE beecoll::
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake
+)
 
 # uninstall target
 if(NOT TARGET uninstall)
-  configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY
+    )
 
-  add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 endif()

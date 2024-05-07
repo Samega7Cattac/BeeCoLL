@@ -1,4 +1,4 @@
-#include "NI.hh"
+#include "beecoll/ATCommands/NI.hh"
 
 constexpr uint8_t NI_OFFSET = 1;
 

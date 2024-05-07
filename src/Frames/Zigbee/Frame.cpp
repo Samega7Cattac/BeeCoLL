@@ -1,4 +1,4 @@
-#include "Frame.hh"
+#include "beecoll/Frames/Zigbee/Frame.hh"
 
 // STD headers
 #include <cstring>

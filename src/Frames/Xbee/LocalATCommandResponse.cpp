@@ -1,4 +1,4 @@
-#include "LocalATCommandResponse.hh"
+#include "beecoll/Frames/Xbee/LocalATCommandResponse.hh"
 
 using namespace BeeCoLL::Xbee;
 

@@ -1,4 +1,4 @@
-#include "Serial.hh"
+#include "beecoll/Nodes/Serial.hh"
 
 BeeCoLL::Serial::~Serial()
 {

@@ -1,4 +1,4 @@
-#include "APDUFrame.hh"
+#include "beecoll/Frames/Zigbee/APDU/APDUFrame.hh"
 
 // STD headers
 #include <cstring>

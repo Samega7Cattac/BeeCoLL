@@ -1,4 +1,4 @@
-#include "SH.hh"
+#include "beecoll/ATCommands/SH.hh"
 
 BeeCoLL::Xbee::ATCommands::SH::SH() :
     ATCommand(SH_ATCOMMAND_CODE)

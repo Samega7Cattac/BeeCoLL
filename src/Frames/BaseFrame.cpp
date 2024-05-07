@@ -1,4 +1,4 @@
-#include "BaseFrame.hh"
+#include "beecoll/Frames/BaseFrame.hh"
 
 // STD headers
 #include <cstring>

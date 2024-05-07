@@ -1,4 +1,4 @@
-#include "MY.hh"
+#include "beecoll/ATCommands/MY.hh"
 
 BeeCoLL::Xbee::ATCommands::MY::MY() :
     ATCommand(MY_ATCOMMAND_CODE)

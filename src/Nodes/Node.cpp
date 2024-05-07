@@ -1,4 +1,4 @@
-#include "Node.hh"
+#include "beecoll/Nodes/Node.hh"
 
 BeeCoLL::Node::Node()
 {

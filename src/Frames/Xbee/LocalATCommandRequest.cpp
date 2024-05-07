@@ -1,5 +1,5 @@
-#include "LocalATCommandRequest.hh"
-#include "LocalATCommandResponse.hh"
+#include "beecoll/Frames/Xbee/LocalATCommandRequest.hh"
+#include "beecoll/Frames/Xbee/LocalATCommandResponse.hh"
 
 #include <iostream>
 

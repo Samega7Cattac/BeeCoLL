@@ -1,4 +1,4 @@
-#include "ZDODeviceAnnounce.hh"
+#include "beecoll/Frames/Zigbee/APDU/Payload/ZDO/ZDODeviceAnnounce.hh"
  
 using namespace BeeCoLL::Zigbee;
 

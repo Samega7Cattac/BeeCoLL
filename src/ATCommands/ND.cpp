@@ -1,4 +1,4 @@
-#include "ND.hh"
+#include "beecoll/ATCommands/ND.hh"
 
 constexpr uint8_t MY_OFFSET1 = 1;
 constexpr uint8_t MY_OFFSET2 = 0;

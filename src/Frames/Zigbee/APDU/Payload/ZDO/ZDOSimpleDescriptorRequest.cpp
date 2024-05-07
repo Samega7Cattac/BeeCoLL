@@ -1,4 +1,4 @@
-#include "ZDOSimpleDescriptorRequest.hh"
+#include "beecoll/Frames/Zigbee/APDU/Payload/ZDO/ZDOSimpleDescriptorRequest.hh"
 
 using namespace BeeCoLL::Zigbee;
 

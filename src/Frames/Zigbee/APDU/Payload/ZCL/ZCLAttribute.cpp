@@ -1,4 +1,4 @@
-#include "ZCLAttribute.hh"
+#include "beecoll/Frames/Zigbee/APDU/Payload/ZCL/ZCLAttribute.hh"
 
 using namespace BeeCoLL::Zigbee;
 

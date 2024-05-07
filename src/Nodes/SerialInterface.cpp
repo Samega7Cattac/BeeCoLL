@@ -1,4 +1,4 @@
-#include "SerialInterface.hh"
+#include "beecoll/Nodes/SerialInterface.hh"
 
 // STD headers
 #include <vector>

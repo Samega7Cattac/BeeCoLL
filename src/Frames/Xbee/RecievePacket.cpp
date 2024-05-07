@@ -1,4 +1,4 @@
-#include "RecievePacket.hh"
+#include "beecoll/Frames/Xbee/RecievePacket.hh"
 
 //STD headers
 #include <algorithm>

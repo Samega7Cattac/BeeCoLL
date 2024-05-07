@@ -9,18 +9,22 @@ FetchContent_Declare(
     GIT_TAG main
 )
 
-add_dependencies(${LIBRARY_TARGET_NAME} serial)
-
 FetchContent_MakeAvailable(serial)
+FetchContent_GetProperties(serial)
 
-target_link_libraries(${LIBRARY_TARGET_NAME}
-    PRIVATE
-        serial)
+add_dependencies(${LIBRARY_TARGET_NAME} serial)
 
 target_link_directories(${LIBRARY_TARGET_NAME}
     PRIVATE
-        serial)
+        ${serial_BINARY_DIR}
+)
 
 target_include_directories(${LIBRARY_TARGET_NAME}
     PRIVATE
-        serial)
+        ${serial_SOURCE_DIR}/include
+)
+
+target_link_libraries(${LIBRARY_TARGET_NAME}
+    PRIVATE
+        serial
+)

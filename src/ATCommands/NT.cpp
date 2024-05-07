@@ -1,4 +1,4 @@
-#include "NT.hh"
+#include "beecoll/ATCommands/NT.hh"
 
 static const uint8_t NT_TIMEOUT_OFFSET = 1;
 

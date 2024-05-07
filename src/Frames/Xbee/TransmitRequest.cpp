@@ -1,6 +1,6 @@
-#include "TransmitRequest.hh"
-#include "RecievePacket.hh"
-#include "ExtendedTransmitStatus.hh"
+#include "beecoll/Frames/Xbee/TransmitRequest.hh"
+#include "beecoll/Frames/Xbee/RecievePacket.hh"
+#include "beecoll/Frames/Xbee/ExtendedTransmitStatus.hh"
 
 // STD headers
 #include <numeric>

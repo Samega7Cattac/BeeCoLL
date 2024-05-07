@@ -1,4 +1,4 @@
-#include "ExtendedTransmitStatus.hh"
+#include "beecoll/Frames/Xbee/ExtendedTransmitStatus.hh"
 
 using namespace BeeCoLL::Xbee;
 

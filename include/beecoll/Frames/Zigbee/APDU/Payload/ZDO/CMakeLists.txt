@@ -1,0 +1,9 @@
+target_sources(${LIBRARY_TARGET_NAME}
+    PUBLIC FILE_SET HEADERS
+        BASE_DIRS ${PROJECT_SOURCE_DIR}/include FILES
+            ZDOPayload.hh
+            ZDODeviceAnnounce.hh
+            ZDOPermitJoining.hh
+            ZDOSimpleDescriptorRequest.hh
+            ZDOSimpleDescriptorResponse.hh
+)

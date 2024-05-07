@@ -1,4 +1,4 @@
-#include "ZDOPermitJoining.hh"
+#include "beecoll/Frames/Zigbee/APDU/Payload/ZDO/ZDOPermitJoining.hh"
 
 using namespace BeeCoLL::Zigbee;
 

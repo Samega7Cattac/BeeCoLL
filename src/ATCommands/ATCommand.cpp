@@ -1,5 +1,5 @@
 // BEECOLL headers
-#include "ATCommand.hh"
+#include "beecoll/ATCommands/ATCommand.hh"
 
 // TODO Debug headers
 #include <iostream>

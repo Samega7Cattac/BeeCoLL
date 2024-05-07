@@ -72,7 +72,8 @@
         "optional": "cpp",
         "source_location": "cpp",
         "iomanip": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "format": "cpp"
     },
     "cSpell.words": [
         "ATCOMMANDS",

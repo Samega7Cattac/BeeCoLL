@@ -1,4 +1,4 @@
-#include "ExplicitRxIndicator.hh"
+#include "beecoll/Frames/Xbee/ExplicitRxIndicator.hh"
 
 //STD headers
 #include <algorithm>

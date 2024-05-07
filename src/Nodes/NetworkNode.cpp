@@ -1,4 +1,4 @@
-#include "NetworkNode.hh"
+#include "beecoll/Nodes/NetworkNode.hh"
 
 #include <iostream>
 
