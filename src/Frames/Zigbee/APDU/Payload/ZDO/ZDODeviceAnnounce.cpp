@@ -1,5 +1,5 @@
 #include "beecoll/Frames/Zigbee/APDU/Payload/ZDO/ZDODeviceAnnounce.hh"
- 
+
 using namespace BeeCoLL::Zigbee;
 
 ZDODeviceAnnounce::ZDODeviceAnnounce(DataFrame& data_frame) : ZDOPayload(data_frame)
